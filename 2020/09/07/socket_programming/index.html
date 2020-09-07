@@ -46,14 +46,45 @@
     <main class="content on">
       <section class="outer">
   <article
-  id="page-"
-  class="article article-type-page"
+  id="post-socket_programming"
+  class="article article-type-post"
   itemscope
   itemprop="blogPost"
   data-scroll-reveal
 >
   <div class="article-inner">
-       
+     
+    <div class="article-meta">
+      <a href="/2020/09/07/socket_programming/" class="article-date">
+  <time datetime="2020-09-07T16:29:57.957Z" itemprop="datePublished">2020-09-08</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">1.8k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">7 min</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
     <div class="article-entry" itemprop="articleBody">
        
   <h1 id="Socket编程"><a href="#Socket编程" class="headerlink" title="Socket编程"></a>Socket编程</h1><ol>
@@ -71,7 +102,7 @@
 </ul>
 </li>
 </ol>
-<pre><code> ![socket通信](/media/yossarian42/blog/images/socket通信过程.png)</code></pre>
+<pre><code> ![socket通信](../images/socket通信过程.png)</code></pre>
 <ol start="3">
 <li><p>客户端/服务器socket通信简单例子</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">#!&#x2F;usr&#x2F;bin&#x2F;env python3</span><br><span class="line">   # 客户端</span><br><span class="line">import socket</span><br><span class="line">   </span><br><span class="line"></span><br><span class="line">   # create socket descriptor</span><br><span class="line">client &#x3D; socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">   # connect with local loopback address</span><br><span class="line">client.connect((&#39;127.0.0.1&#39;, 9999))</span><br><span class="line">   </span><br><span class="line">   # receive message from server, and send message from console input</span><br><span class="line">   # close the socket until input &#39;exit&#39;</span><br><span class="line">   while True:</span><br><span class="line">   	data &#x3D; client.recv(1024)</span><br><span class="line">   	print(data.decode(&#39;utf-8&#39;))</span><br><span class="line">   	</span><br><span class="line">   	msg &#x3D; input(&#39;&gt;&gt;&gt; &#39;)</span><br><span class="line">   	client.send(msg.encode(&#39;utf-8&#39;))</span><br><span class="line">   	if msg &#x3D;&#x3D; &#39;exit&#39;:</span><br><span class="line">   		break</span><br><span class="line">   client.close()</span><br></pre></td></tr></table></figure>
@@ -115,7 +146,7 @@
 <li>进程的阻塞：</li>
 </ul>
 <p>正在执行的进程，由于期待的某些事件未发生，如请求系统资源失败、等待某种操作的完成、新数据尚未到达或无新工作做等，则由系统自动执行阻塞原语（Block），使自己由运行状态变为阻塞状态。当进程调用一个阻塞（Block）的系统函数时，该进程被置于睡眠状态，这时内核调度其他进程运行，直到该进程等待的事件发生了（比如网络上接收到数据包，或者调用sleep制定的睡眠时间到了）它才有可能继续运行。与睡眠状态相对的是运行状态，在linux内核中处于运行状态的进程分为两种情况：正在被调用执行和就绪状态。</p>
-<p><img src="/media/yossarian42/blog/images/%E8%BF%9B%E7%A8%8B%E6%A8%A1%E5%9E%8B.jpeg" alt="进程模型"></p>
+<p><img src="../images/%E8%BF%9B%E7%A8%8B%E6%A8%A1%E5%9E%8B.jpeg" alt="进程模型"></p>
 <ul>
 <li>Unix/Linux下可用的5种I/O模型：<ul>
 <li>阻塞I/O</li>
@@ -203,7 +234,7 @@
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://yossarian0916.github.io/doc/socket_programming.html" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://yossarian0916.github.io/2020/09/07/socket_programming/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -212,6 +243,25 @@
   </div>
 
    
+  <nav class="article-nav">
+    
+      <a href="/2020/09/07/linux_structure/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            (no title)
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2020/09/07/java_generics/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title"></div>
+      </a>
+    
+  </nav>
+
    
 <!-- valine评论 -->
 <div id="vcomments-box">
@@ -261,7 +311,7 @@
 </style>
 
  
-   
+     
 </article>
 
 </section>
@@ -417,6 +467,23 @@
 <script src="/js/lazyload.min.js"></script>
 
 <!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">

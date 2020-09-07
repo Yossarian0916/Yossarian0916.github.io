@@ -46,70 +46,68 @@
     <main class="content on">
       <section class="outer">
   <article
-  id="page-"
-  class="article article-type-page"
+  id="post-linux_kernel_space"
+  class="article article-type-post"
   itemscope
   itemprop="blogPost"
   data-scroll-reveal
 >
   <div class="article-inner">
-       
+     
+    <div class="article-meta">
+      <a href="/2020/09/07/linux_kernel_space/" class="article-date">
+  <time datetime="2020-09-07T16:29:57.937Z" itemprop="datePublished">2020-09-08</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">1.3k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">4 min</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
     <div class="article-entry" itemprop="articleBody">
        
-  <h2 id="GPU加速版TensorFlow安装踩坑记录"><a href="#GPU加速版TensorFlow安装踩坑记录" class="headerlink" title="GPU加速版TensorFlow安装踩坑记录"></a>GPU加速版TensorFlow安装踩坑记录</h2><p>System information:</p>
-<ul>
-<li><p>Ubuntu 18.04 LTS</p>
-</li>
-<li><p>TensorFlow version: 1.13</p>
-</li>
-<li><p>Python version: 3.6</p>
-</li>
-<li><p>CUDA: 10.0</p>
-</li>
-<li><p>cuDNN: 7.4</p>
-</li>
-<li><p>GPU: Nvidia GeForce GTX 1050</p>
-</li>
-</ul>
+  <h1 id="Linux内核空间，用户空间"><a href="#Linux内核空间，用户空间" class="headerlink" title="Linux内核空间，用户空间"></a>Linux内核空间，用户空间</h1><p>用户界面是操作系统的外在表象，内核才是操作系统的内在核心。系统其他部分必须依靠内核这部分软件提供的服务，像管理硬件设备、分配系统资源等。内核有时候被称作是管理者或者是操作系统核心。通常一个内核由负责响应中断的中断服务程序、负责管理多个进程从而分享处理器时间的调度程序，负责管理进程地址空间的内存管理程序和网络、进程间通信等系统服务程序共同组成。对于提供保护机制的现代系统来说，内核独立于普通应用程序，他一般处于系统态，拥有受保护的内存空间和访问硬件设备的所有权限。这种系统态和被保护起来的内存空间，统称为内核空间。相对的，应用程序在用户空间执行。它们只能看到允许它们使用的部分系统资源，并且只使用某些特定的系统功能，不能直接访问硬件，也不能访问内核划给别人的内存范围，还有其他一些使用限制。当内核运行的时候，系统以内核态进入内核空间执行。而执行一个普通用户程序时，系统将以用户态进入用户空间执行。</p>
 <ol>
-<li><p>千万提前确定好需要使用的tensorflow版本，再下载版本匹配的CUDA, cuDNN</p>
-<p>幸好TensorFlow已经帮我们测试好了，在官网可以轻松找到推荐的<a target="_blank" rel="noopener" href="https://www.tensorflow.org/install/source#tested_build_configurations">构建配置</a>。因为我平时都在用Ubuntu18.04，在这把Linux平台上合适的配置放出来</p>
-<p><img src="/media/yossarian42/blog/images/TensorFlow-linux-%E6%9E%84%E5%BB%BA%E9%85%8D%E7%BD%AE.png" alt="Linux平台构建配置"></p>
+<li><p>用户空间、内核空间</p>
+<p>现代操作系统都是采用虚拟存储器，对于32位操作系统，它的逻辑内存（虚拟存储空间）为4G（2^32）。为了保护内核，将其与用户应用程序代码隔离开来，操作系统将逻辑内存划分为两部分，一部分为内核空间，一部分为用户空间。针对linux操作系统而言，将最高的1G字节（从虚拟地址0xC0000000到0xFFFFFFFF），供内核使用；将较低的3G字节（从0x00000000到0xBFFFFFFF）供用户进程使用。每个进程可以通过系统调用进入内核。</p>
+<p><img src="../images/linux%E7%B3%BB%E7%BB%9F4G%E9%80%BB%E8%BE%91%E5%86%85%E5%AD%98%E7%A9%BA%E9%97%B4%E5%88%86%E9%85%8D.png" alt="linux系统4G逻辑内存空间分配"></p>
+<p>内核空间存放linux内核代码和数据，用户空间存放的是用户的程序代码和数据。Linux只使用Intel的Ring0和Ring3两级保护机制（Ring0供内核使用，Ring3供用户空间使用）</p>
+<p><img src="../images/linux%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84.png" alt="linux操作系统内部结构"></p>
+<p><strong>但一个进程执行系统调用而陷入内核代码中执行时，称进程处于内核运行态（内核态）</strong>。此时内核正在代其执行，在这种情况下，进程被称为通过系统调用在内核空间运行，而内核被称为运行于进程上下文中。当进程处于内核态时，执行的内核代码会使用当前进程的内核栈。每个进程都有自己的内核栈。</p>
+<p><strong>当进程在执行用户程序代码时，则称其处于用户运行态（用户态）</strong>。</p>
 </li>
-<li><p>确定好构建配置，这一步可以<a target="_blank" rel="noopener" href="https://developer.nvidia.com/cuda-toolkit-archive">下载CUDA</a>和<a target="_blank" rel="noopener" href="https://developer.nvidia.com/rdp/cudnn-archive">cuDNN</a>了</p>
-<p>CUDA安装指令在官网已经详细贴出来，我就不再重复（真正的坑在安装cuDNN的时候等着呢）</p>
-<p><a target="_blank" rel="noopener" href="https://docs.nvidia.com/deeplearning/sdk/cudnn-install/index.html#installlinux">安装cuDNN</a>（这里还是以Linux平台为例）：</p>
+<li><p>进程上下文，中断上下文<br>上下文（context）简单来说就是一个环境。对于进程来说就是进程执行时的环境。<br>用户空间的程序通过系统调用进入内核空间。这个时候用户空间的进程要传递很多变量、参数给内核，内核态运行的时候也要保存用户进程的一些寄存器的值、变量等。相对于进程而言，具体就是各个变量和数据，包括所有的寄存器变量、进程打开的文件、内存信息等。一个进程的上下文可以分为三个部分：用户级上下文、寄存器上下文以及系统上下文。</p>
 <ul>
-<li><p>下载cuDNN需要先注册</p>
-</li>
-<li><p>解压tar包，先修改tar包文件权限</p>
-<p><code>$sudo chmod +x cudnn-10.0-linux-x64-v7.4.2.tgz</code></p>
-<p><code>$tar -xzvf cudnn-10.0-linux-x64-v7.4.2.24.tgz</code></p>
-</li>
-<li><p>复制下列文件到CUDA Toolkit的文件夹，修改这些文件权限</p>
-<p>一般CUDA Toolkit会自动安装在<code>/usr/local</code>下面</p>
-<p><code>$sudo cp cuda/include/cudnn.h /usr/local/cuda/include</code></p>
-<p><code>$sudo cp cuda/lib64/libcudnn* /usr/local/cuda/lib64</code></p>
-<p><code>$sudo chmod a+r /usr/local/cuda/include/cudnn.h /usr/local/cuda/lib64/libcudnn*</code></p>
-</li>
+<li>用户级上下文：正文、数据、用户堆栈以及共享存储器；</li>
+<li>寄存器上下文：通用寄存器、程序寄存器、处理器状态寄存器、栈指针；</li>
+<li>系统级上下文：进程控制块（task_struct)、内存管理信息（mm_struct, vm_area_struct, pgd, pte）、内核栈<br>当发生进程调度时，进行进程切换就是上下文切换（context switch）。操作系统必须对上面提到的全部信息进行切换，新调度的进程才能运行。而系统调用进行的模式切换（mode switch），模式切换相较于进程切换，容易很多，而且节省时间，因为模式切换最主要的任务时切换进程寄存器。</li>
 </ul>
-</li>
-<li><p>全部安装好后，检查版本是否正确</p>
-<ul>
-<li><p>CUDA版本</p>
-<p><code>$cat /usr/local/cuda/version.txt</code> 或者<code>nvcc --version</code></p>
-</li>
-<li><p>cuDNN版本</p>
-<p><code>$cat /usr/local/cuda/include/cudnn.h | grep CUDNN_MAJOR -A 2</code></p>
-<p>ps: 有时候遇到<code>failed call to cuInit: CUDA_ERROR_UNKNOWN: unknown error</code>需要重启电脑</p>
-</li>
-</ul>
-</li>
-<li><p>最后的最后，检查TensorFlow是否能使用GPU加速</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">from tensorflow.python.client import device_lib</span><br><span class="line">import tensorflow as tf</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># list the avilable devices in local processes</span><br><span class="line">device_lib.list_local_devices()</span><br><span class="line"></span><br><span class="line"># matrix multiplying with GPU</span><br><span class="line">a &#x3D; tf.constant([1.0, 2.0, 3.0, 4.0, 5.0, 6.0], shape&#x3D;[2, 3], name&#x3D;&#39;a&#39;)</span><br><span class="line">b &#x3D; tf.constant([1.0, 2.0, 3.0, 4.0, 5.0, 6.0], shape&#x3D;[3, 2], name&#x3D;&#39;b&#39;)</span><br><span class="line">c &#x3D; tf.matmul(a, b)</span><br><span class="line"></span><br><span class="line">sess &#x3D; tf.Session(config&#x3D;tf.ConfigProto(log_device_placement&#x3D;True))</span><br><span class="line">print(sess.run(c))</span><br></pre></td></tr></table></figure>
-
+<p>硬件通过触发信号，导致内核调用中断处理程序，进入内核空间。这个过程中，硬件的一些变量和参数也要传递给内核，内核通多这些参数进行中断处理。所谓中断上下文，其实也可以看作硬件传递过来的参数和内核需要保存的一些环境。中断时，内核不代替任何进程运行，而是执行中断处理，与之没有进程相关联，也就没有进程上下文。内核运行与中断上下文时，不会被阻塞，因为此时没有与之关联的进程上下文，也就没有进程。</p>
 </li>
 </ol>
+<h2 id="References"><a href="#References" class="headerlink" title="References:"></a>References:</h2><p>[Linux内核设计与实现（第三版）]</p>
+<p>[用户空间与内核空间，进程上下文与中断上下文]：(<a target="_blank" rel="noopener" href="https://www.cnblogs.com/Anker/p/3269106.html">https://www.cnblogs.com/Anker/p/3269106.html</a>)</p>
  
       <!-- reward -->
       
@@ -178,7 +176,7 @@
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://yossarian0916.github.io/doc/GPU%E5%8A%A0%E9%80%9F%E7%89%88TensorFlow%E5%AE%89%E8%A3%85%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95.html" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://yossarian0916.github.io/2020/09/07/linux_kernel_space/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -187,6 +185,25 @@
   </div>
 
    
+  <nav class="article-nav">
+    
+      <a href="/2020/09/07/java_io/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            (no title)
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2020/09/07/GPU%E5%8A%A0%E9%80%9F%E7%89%88TensorFlow%E5%AE%89%E8%A3%85%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title"></div>
+      </a>
+    
+  </nav>
+
    
 <!-- valine评论 -->
 <div id="vcomments-box">
@@ -236,7 +253,7 @@
 </style>
 
  
-   
+     
 </article>
 
 </section>
@@ -392,6 +409,23 @@
 <script src="/js/lazyload.min.js"></script>
 
 <!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">

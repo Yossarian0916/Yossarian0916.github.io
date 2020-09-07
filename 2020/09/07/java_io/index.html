@@ -46,37 +46,72 @@
     <main class="content on">
       <section class="outer">
   <article
-  id="page-"
-  class="article article-type-page"
+  id="post-java_io"
+  class="article article-type-post"
   itemscope
   itemprop="blogPost"
   data-scroll-reveal
 >
   <div class="article-inner">
-       
+     
+    <div class="article-meta">
+      <a href="/2020/09/07/java_io/" class="article-date">
+  <time datetime="2020-09-07T16:29:57.949Z" itemprop="datePublished">2020-09-08</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">550</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">1 min</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
     <div class="article-entry" itemprop="articleBody">
        
-  <h1 id="Linux内核空间，用户空间"><a href="#Linux内核空间，用户空间" class="headerlink" title="Linux内核空间，用户空间"></a>Linux内核空间，用户空间</h1><p>用户界面是操作系统的外在表象，内核才是操作系统的内在核心。系统其他部分必须依靠内核这部分软件提供的服务，像管理硬件设备、分配系统资源等。内核有时候被称作是管理者或者是操作系统核心。通常一个内核由负责响应中断的中断服务程序、负责管理多个进程从而分享处理器时间的调度程序，负责管理进程地址空间的内存管理程序和网络、进程间通信等系统服务程序共同组成。对于提供保护机制的现代系统来说，内核独立于普通应用程序，他一般处于系统态，拥有受保护的内存空间和访问硬件设备的所有权限。这种系统态和被保护起来的内存空间，统称为内核空间。相对的，应用程序在用户空间执行。它们只能看到允许它们使用的部分系统资源，并且只使用某些特定的系统功能，不能直接访问硬件，也不能访问内核划给别人的内存范围，还有其他一些使用限制。当内核运行的时候，系统以内核态进入内核空间执行。而执行一个普通用户程序时，系统将以用户态进入用户空间执行。</p>
-<ol>
-<li><p>用户空间、内核空间</p>
-<p>现代操作系统都是采用虚拟存储器，对于32位操作系统，它的逻辑内存（虚拟存储空间）为4G（2^32）。为了保护内核，将其与用户应用程序代码隔离开来，操作系统将逻辑内存划分为两部分，一部分为内核空间，一部分为用户空间。针对linux操作系统而言，将最高的1G字节（从虚拟地址0xC0000000到0xFFFFFFFF），供内核使用；将较低的3G字节（从0x00000000到0xBFFFFFFF）供用户进程使用。每个进程可以通过系统调用进入内核。</p>
-<p><img src="/media/yossarian42/blog/images/linux%E7%B3%BB%E7%BB%9F4G%E9%80%BB%E8%BE%91%E5%86%85%E5%AD%98%E7%A9%BA%E9%97%B4%E5%88%86%E9%85%8D.png" alt="linux系统4G逻辑内存空间分配"></p>
-<p>内核空间存放linux内核代码和数据，用户空间存放的是用户的程序代码和数据。Linux只使用Intel的Ring0和Ring3两级保护机制（Ring0供内核使用，Ring3供用户空间使用）</p>
-<p><img src="/media/yossarian42/blog/images/linux%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84.png" alt="linux操作系统内部结构"></p>
-<p><strong>但一个进程执行系统调用而陷入内核代码中执行时，称进程处于内核运行态（内核态）</strong>。此时内核正在代其执行，在这种情况下，进程被称为通过系统调用在内核空间运行，而内核被称为运行于进程上下文中。当进程处于内核态时，执行的内核代码会使用当前进程的内核栈。每个进程都有自己的内核栈。</p>
-<p><strong>当进程在执行用户程序代码时，则称其处于用户运行态（用户态）</strong>。</p>
-</li>
-<li><p>进程上下文，中断上下文<br>上下文（context）简单来说就是一个环境。对于进程来说就是进程执行时的环境。<br>用户空间的程序通过系统调用进入内核空间。这个时候用户空间的进程要传递很多变量、参数给内核，内核态运行的时候也要保存用户进程的一些寄存器的值、变量等。相对于进程而言，具体就是各个变量和数据，包括所有的寄存器变量、进程打开的文件、内存信息等。一个进程的上下文可以分为三个部分：用户级上下文、寄存器上下文以及系统上下文。</p>
+  <h1 id="Java-I-O"><a href="#Java-I-O" class="headerlink" title="Java I/O"></a>Java I/O</h1><p>I/O流 概念： 流数据从一端传到另一端</p>
+<p>Java I/O流分为三大类：</p>
 <ul>
-<li>用户级上下文：正文、数据、用户堆栈以及共享存储器；</li>
-<li>寄存器上下文：通用寄存器、程序寄存器、处理器状态寄存器、栈指针；</li>
-<li>系统级上下文：进程控制块（task_struct)、内存管理信息（mm_struct, vm_area_struct, pgd, pte）、内核栈<br>当发生进程调度时，进行进程切换就是上下文切换（context switch）。操作系统必须对上面提到的全部信息进行切换，新调度的进程才能运行。而系统调用进行的模式切换（mode switch），模式切换相较于进程切换，容易很多，而且节省时间，因为模式切换最主要的任务时切换进程寄存器。</li>
+<li>按照读写单元（bit or byte）：字节流，字符流</li>
+<li>按照流的方向：输入流，输出流</li>
+<li>按照功能分：节点流，处理流</li>
 </ul>
-<p>硬件通过触发信号，导致内核调用中断处理程序，进入内核空间。这个过程中，硬件的一些变量和参数也要传递给内核，内核通多这些参数进行中断处理。所谓中断上下文，其实也可以看作硬件传递过来的参数和内核需要保存的一些环境。中断时，内核不代替任何进程运行，而是执行中断处理，与之没有进程相关联，也就没有进程上下文。内核运行与中断上下文时，不会被阻塞，因为此时没有与之关联的进程上下文，也就没有进程。</p>
-</li>
+<p>字节流和字符流：</p>
+<ul>
+<li>当我们读取文件然后再写入其他文件时，不用过多的关注读取的内容时，通常使用的是字节流，因为这相当于是在处理二进制文件。读取数据效率高，并且保持数据的完整性；当我们读取文件的内容，并对文件的内容进行加工时，通常使用字符流。</li>
+</ul>
+<p>节点流和处理流：</p>
+<ul>
+<li>节点流：即从特定的数据源读取写入数据</li>
+<li>处理流：在已经存在的节点流或者处理流上，进行装饰提供更强大的读写功能<ol>
+<li>缓冲流（Buffered）带缓冲区，在节点流上添加缓冲区（例如：<code>new BufferedInputStream(new FileInputStream())</code>），这样避免读取文件时，大量进行硬盘的读写，提高读写效率</li>
+<li>转换流（StreamReader）即字节流和字符流的相互转换，比如：在进行读写字节流时，想调用读取字符流的函数，就可以通过转换流。<code>InputStreamReader in = new InputStreamReader(new InputStream())</code> <strong>注意只能字节流=&gt;字符流</strong></li>
+<li>数据流（Data）当读取写入具体的数值数据时，<code>DataInputStream</code>可以让你从<code>InputStream</code>读取Java基本类型来代替原始字节。如果读取的数据是由大于一个字节的Java基本类型构成，如int，long，float，double等，那么用<code>DataInputStream</code>是很方便的。读取的时候记住先读先写的原则，顺序不能乱，因为Java基本类型都是大于一个字节的，顺序不对，读取出来会出现乱码。所以在用<code>DataInputStream</code>的时候要么为文件中的数据采用固定格式，要么将额外信息保存到文件中，以便解析的时候确定数据位置和类型使用。</li>
 </ol>
-<h2 id="References"><a href="#References" class="headerlink" title="References:"></a>References:</h2><p>[Linux内核设计与实现（第三版）]</p>
-<p>[用户空间与内核空间，进程上下文与中断上下文]：(<a target="_blank" rel="noopener" href="https://www.cnblogs.com/Anker/p/3269106.html">https://www.cnblogs.com/Anker/p/3269106.html</a>)</p>
+</li>
+</ul>
+<h3 id="Java-IO类结构"><a href="#Java-IO类结构" class="headerlink" title="Java IO类结构"></a>Java IO类结构</h3><p><strong><code>InputStream, OutputSteam, Reader, Writer</code>都是抽象类</strong></p>
+<p>贴张图：</p>
+<p><img src="../images/java_IO.jpeg"></p>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_16558621/article/details/51377887">Java流机制详解</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/zhaoyanjun6/article/details/54292148">Java IO流学习总结一：输入输出流</a></p>
  
       <!-- reward -->
       
@@ -145,7 +180,7 @@
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://yossarian0916.github.io/doc/linux_kernel_space.html" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://yossarian0916.github.io/2020/09/07/java_io/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -154,6 +189,25 @@
   </div>
 
    
+  <nav class="article-nav">
+    
+      <a href="/2020/09/07/java_generics/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            (no title)
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2020/09/07/linux_kernel_space/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title"></div>
+      </a>
+    
+  </nav>
+
    
 <!-- valine评论 -->
 <div id="vcomments-box">
@@ -203,7 +257,7 @@
 </style>
 
  
-   
+     
 </article>
 
 </section>
@@ -359,6 +413,23 @@
 <script src="/js/lazyload.min.js"></script>
 
 <!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
