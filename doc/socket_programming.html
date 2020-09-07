@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="description" content="personal notes, keep track of learning tech" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+     personal notes, keep track of learning tech
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+  
+
+  
+
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="page-"
+  class="article article-type-page"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+       
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="Socket编程"><a href="#Socket编程" class="headerlink" title="Socket编程"></a>Socket编程</h1><ol>
+<li><p>网络中进程间通信</p>
+<p>进程通信的概念最初来自于单机系统。网络间进程通信要解决的是不同主机进程间的相互通信问题（可把统计进程通信看做是其中的特列）。首先需要解决的是网络间进程标识的问题。同一主机上，不同进程可以用进程号（PID）来区分。但在局域网中，各主机独立分配进程号，不同主机不同基层可能拥有相同的进程号，所以无法用来唯一标识。</p>
+<p>TCP/IP协议族可以解决这个问题，网络层的”ip地址“可以唯一标识网络中的主机，而传输层的”协议+端口号“可以唯一标识主机中的进程。这样一个三元组（IP地址，协议，端口）就可以标识网络的进程了，网络中的进程通信就可以利用这个标识与其他进程交互。</p>
+<p>使用TCP/IP协议的程序通常采用应用编程接口：UNIX BSD的套接字（socket）来实现网络进程之间的通信。</p>
+</li>
+<li><p>什么是socket</p>
+<ul>
+<li><p>socket套接字</p>
+<p>socket起源于Unix，而Unix基本哲学之一就是”一切皆文件“， 都可以用”open -&gt; write/read -&gt; close“模式来操作。socket就是该模式的一个实现。socket即是一种特殊的文件，一些socket函数就是对其进行的操作。</p>
+<p>socket是在应用层与TCP/IP之间的一个软件抽象层次，准确的说，它是一个接口。在设计模式中，socket使用了门面模式（Facade pattern）。它将复杂的TCP/IP协议族隐藏在socket接口后面，对用户来说，一组简单的接口就是全部，让socket去组织数据。</p>
+</li>
+</ul>
+</li>
+</ol>
+<pre><code> ![socket通信](/media/yossarian42/blog/images/socket通信过程.png)</code></pre>
+<ol start="3">
+<li><p>客户端/服务器socket通信简单例子</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">#!&#x2F;usr&#x2F;bin&#x2F;env python3</span><br><span class="line">   # 客户端</span><br><span class="line">import socket</span><br><span class="line">   </span><br><span class="line"></span><br><span class="line">   # create socket descriptor</span><br><span class="line">client &#x3D; socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">   # connect with local loopback address</span><br><span class="line">client.connect((&#39;127.0.0.1&#39;, 9999))</span><br><span class="line">   </span><br><span class="line">   # receive message from server, and send message from console input</span><br><span class="line">   # close the socket until input &#39;exit&#39;</span><br><span class="line">   while True:</span><br><span class="line">   	data &#x3D; client.recv(1024)</span><br><span class="line">   	print(data.decode(&#39;utf-8&#39;))</span><br><span class="line">   	</span><br><span class="line">   	msg &#x3D; input(&#39;&gt;&gt;&gt; &#39;)</span><br><span class="line">   	client.send(msg.encode(&#39;utf-8&#39;))</span><br><span class="line">   	if msg &#x3D;&#x3D; &#39;exit&#39;:</span><br><span class="line">   		break</span><br><span class="line">   client.close()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">#!&#x2F;usr&#x2F;bin&#x2F;env python3</span><br><span class="line"># 服务器端</span><br><span class="line">import socket</span><br><span class="line">import time</span><br><span class="line">import random</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">s &#x3D; socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">s.bind((&#39;127.0.0.1&#39;, 9999))</span><br><span class="line">s.listen(5)  # backlog number</span><br><span class="line">print(&#39;Waiting for connection...&#39;)</span><br><span class="line"></span><br><span class="line"># accept connection from client</span><br><span class="line"># receive message from client and send a random integer back </span><br><span class="line"># until receive &#39;exit&#39;, close the connection and wait for next one</span><br><span class="line">while True:</span><br><span class="line">	conn, addr &#x3D; s.accept()</span><br><span class="line">	conn.send(b&#39;Welcome&#39;)</span><br><span class="line">	print(&#39;Connected with %s:%s&#39; % addr)</span><br><span class="line">	while True:</span><br><span class="line">		data &#x3D; conn.recv(1024)</span><br><span class="line">		time.sleep(1)  # simple way to unpack block</span><br><span class="line">		if not data or data.encode(&#39;utf-8&#39;) &#x3D;&#x3D; &#39;exit&#39;:</span><br><span class="line">			break</span><br><span class="line">		else:</span><br><span class="line">			msg &#x3D; random.randint(1, 100)</span><br><span class="line">			conn.send(str(msg).encode(&#39;utf-8&#39;))</span><br><span class="line">	conn.close()</span><br><span class="line">	print(&#39;Connection from %s:%s closed\n&#39; % addr)</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ol>
+<ol start="4">
+<li><p>Python socket编程</p>
+<p>a. 创建socket描述符</p>
+<p><code>socket.socket(address_family, socket_type, protocol)</code></p>
+<p><code>address_family</code>选择协议族（都以AF_开头），决定地址格式。<code>socket_type</code>确定套接字的类型。<code>protocol</code>指定协议。</p>
+<p>b. 链接<code>connect()</code></p>
+<p>c. 监听<code>bind()</code></p>
+<p><code>accept()</code></p>
+<p>d. 接受<code>recv()</code> <code>recvfrom()</code> </p>
+<p>e. 发送 <code>send()</code>  <code>sendto()</code></p>
+</li>
+<li><p>Unix/linux下网络处理多连接</p>
+<p>解决多客户‘并发’的方式：</p>
+<p>a. 多线程</p>
+<p>每当有客户端连接，启动一个线程来处理客户端数据</p>
+<p>b. 异步I/O</p>
+<p><code>asyncio</code>库使用单线程来处理多任务, 使用事件循环来管理任务</p>
+<p>c. I/O复用，同步非阻塞监听</p>
+<p>先来理解下复用这个概念，复用也就是共用的意思。比较形象的解释，先看在通信领域中的使用，在通信领域中为了充分利用网络连接的物理介质，往往在同一条网络链路上采用时分复用或者频分复用的技术使其在同一链路上传输多路信号。对于网络编程来说，客户端发来的请求服务端会产生一个进程来对其服务，每当来一个客户请求就产生一个进程来服务，然而进程不可能无限制的产生，因此为了解决大量客户端访问的问题，引入了I/O复用技术：一个进程可以同时对多个客户请求进行服务。也就是说I/O复用的介质是进程，复用一个进程来对多个I/O进行服务，虽然客户端发来的I/O是并发的，但是I/O所需的读写数据多数情况下是没有准备好的，因此就可以利用<code>select</code>或者<code>poll</code> 来监听I/O所需的这些数据的状态，一旦I/O有数据可以进行读写了，进程就来对这样的I/O进行服务。</p>
+</li>
+</ol>
+<p>   <code>引用自Operating System Concpet - Abraham Silberschatz</code></p>
+<p>   <em>“To support the implementation of servers, the socket interface also provides a function called <code>select()</code> that manages a set of sockets. A call to <code>select()</code> returns information about which sockets have a packet waiting to be received and which sockets have room to accept a packet to be sent. The use of <code>select()</code> eliminates the polling and busy waiting that would otherwise be necessary for network I/O.’’</em></p>
+<p>   假设一个进程同时见识多个设备，如果<code>read(设备1)</code> 是阻塞的，那么只要设备1没有数据到达，就会一直阻</p>
+<p>   塞在设备1的read调用上，即使设备2有数据到达也不能处理，使用非阻塞I/O就可以避免设备2得不到及时处理。</p>
+<p>   非阻塞I/O有一个缺点，如果所有设备都一直没有数据到达，调用者需要反复查询做无用功，如果阻塞在那里系统可以调度执行其他进程，就不会做无用功了。<code>select()</code> 函数可以阻塞地同时监视多个设备，还可以设定阻塞等待的超市时间，从而解决了这个问题。</p>
+<p>   python标准库提供I/O多路复用模块，包括基础的<code>select</code> 模块和高层的<code>selectors</code> 模块</p>
+<ol start="6">
+<li><p>附录</p>
+<ul>
+<li>进程的阻塞：</li>
+</ul>
+<p>正在执行的进程，由于期待的某些事件未发生，如请求系统资源失败、等待某种操作的完成、新数据尚未到达或无新工作做等，则由系统自动执行阻塞原语（Block），使自己由运行状态变为阻塞状态。当进程调用一个阻塞（Block）的系统函数时，该进程被置于睡眠状态，这时内核调度其他进程运行，直到该进程等待的事件发生了（比如网络上接收到数据包，或者调用sleep制定的睡眠时间到了）它才有可能继续运行。与睡眠状态相对的是运行状态，在linux内核中处于运行状态的进程分为两种情况：正在被调用执行和就绪状态。</p>
+<p><img src="/media/yossarian42/blog/images/%E8%BF%9B%E7%A8%8B%E6%A8%A1%E5%9E%8B.jpeg" alt="进程模型"></p>
+<ul>
+<li>Unix/Linux下可用的5种I/O模型：<ul>
+<li>阻塞I/O</li>
+<li>非阻塞I/O</li>
+<li>I/O多路复用 (select, poll)</li>
+<li>信号驱动I/O (SIGIO)</li>
+<li>异步I/O</li>
+</ul>
+</li>
+</ul>
+</li>
+<li></li>
+</ol>
+<p>Reference：</p>
+<p>[1] <a target="_blank" rel="noopener" href="https://www.cnblogs.com/jiangzhaowei/p/8261174.html">Linux的SOCKET编程详解</a></p>
+<p>[2] <a target="_blank" rel="noopener" href="https://www.jianshu.com/p/4d0fab3fed16?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation">Python——Socket编程</a></p>
+<p>[3] <a target="_blank" rel="noopener" href="https://www.jianshu.com/p/9207700ec26d">Python Socket编程</a></p>
+<p>[4] <a target="_blank" rel="noopener" href="https://keelii.gitbooks.io/socket-programming-in-python-cn/content/">Python中的Socket编程</a></p>
+<p>[5] <a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000003063859#articleHeader6">Linux IO模式及select, poll, epoll详解</a></p>
+ 
+      <!-- reward -->
+      
+      <div id="reword-out">
+        <div id="reward-btn">
+          Donate
+        </div>
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>Copyright： </strong>
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://yossarian0916.github.io/doc/socket_programming.html" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+    </footer>
+  </div>
+
+   
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "",
+    app_key: "",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+   
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2015-2020
+        <i class="ri-heart-fill heart_icon"></i> Yossarian42
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered by <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Theme - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>Visitors:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>Views:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="乱笔,留下一奈奈记录"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/friends">友链</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/abouts">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+
+
+<link rel="stylesheet" href="/css/clipboard.css">
+
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+<!-- CanvasBackground -->
+
+
+    
+  </div>
+</body>
+
+</html>
