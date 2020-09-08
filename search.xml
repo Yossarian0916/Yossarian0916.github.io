@@ -294,10 +294,8 @@
 </li>
 </ul>
 </li>
-<li></li>
 </ol>
-<p>Reference：</p>
-<p>[1] <a href="https://www.cnblogs.com/jiangzhaowei/p/8261174.html">Linux的SOCKET编程详解</a></p>
+<h1 id="Reference："><a href="#Reference：" class="headerlink" title="Reference："></a>Reference：</h1><p>[1] <a href="https://www.cnblogs.com/jiangzhaowei/p/8261174.html">Linux的SOCKET编程详解</a></p>
 <p>[2] <a href="https://www.jianshu.com/p/4d0fab3fed16?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation">Python——Socket编程</a></p>
 <p>[3] <a href="https://www.jianshu.com/p/9207700ec26d">Python Socket编程</a></p>
 <p>[4] <a href="https://keelii.gitbooks.io/socket-programming-in-python-cn/content/">Python中的Socket编程</a></p>
