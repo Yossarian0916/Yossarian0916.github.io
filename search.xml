@@ -151,8 +151,7 @@
 <p>硬件通过触发信号，导致内核调用中断处理程序，进入内核空间。这个过程中，硬件的一些变量和参数也要传递给内核，内核通多这些参数进行中断处理。所谓中断上下文，其实也可以看作硬件传递过来的参数和内核需要保存的一些环境。中断时，内核不代替任何进程运行，而是执行中断处理，与之没有进程相关联，也就没有进程上下文。内核运行与中断上下文时，不会被阻塞，因为此时没有与之关联的进程上下文，也就没有进程。</p>
 </li>
 </ol>
-<h2 id="References"><a href="#References" class="headerlink" title="References:"></a>References:</h2><p>[Linux内核设计与实现（第三版）]</p>
-<p>[用户空间与内核空间，进程上下文与中断上下文]：(<a href="https://www.cnblogs.com/Anker/p/3269106.html">https://www.cnblogs.com/Anker/p/3269106.html</a>)</p>
+<h1 id="References"><a href="#References" class="headerlink" title="References:"></a>References:</h1><p>Linux内核设计与实现（第三版）<br><a href="https://www.cnblogs.com/Anker/p/3269106.html">用户空间与内核空间，进程上下文与中断上下文</a></p>
 ]]></content>
       <tags>
         <tag>Linux</tag>
