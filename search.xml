@@ -53,20 +53,7 @@
 </ul>
 </li>
 <li><p>最后的最后，检查TensorFlow是否能使用GPU加速</p>
-<pre><code class="hljs python3">from tensorflow.python.client import device_lib
-import tensorflow as tf
-
-
-# list the avilable devices in local processes
-device_lib.list_local_devices()
-
-# matrix multiplying with GPU
-a &#x3D; tf.constant([1.0, 2.0, 3.0, 4.0, 5.0, 6.0], shape&#x3D;[2, 3], name&#x3D;&#39;a&#39;)
-b &#x3D; tf.constant([1.0, 2.0, 3.0, 4.0, 5.0, 6.0], shape&#x3D;[3, 2], name&#x3D;&#39;b&#39;)
-c &#x3D; tf.matmul(a, b)
-
-sess &#x3D; tf.Session(config&#x3D;tf.ConfigProto(log_device_placement&#x3D;True))
-print(sess.run(c))</code></pre>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">from tensorflow.python.client import device_lib</span><br><span class="line">import tensorflow as tf</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># list the avilable devices in local processes</span><br><span class="line">device_lib.list_local_devices()</span><br><span class="line"></span><br><span class="line"># matrix multiplying with GPU</span><br><span class="line">a &#x3D; tf.constant([1.0, 2.0, 3.0, 4.0, 5.0, 6.0], shape&#x3D;[2, 3], name&#x3D;&#39;a&#39;)</span><br><span class="line">b &#x3D; tf.constant([1.0, 2.0, 3.0, 4.0, 5.0, 6.0], shape&#x3D;[3, 2], name&#x3D;&#39;b&#39;)</span><br><span class="line">c &#x3D; tf.matmul(a, b)</span><br><span class="line"></span><br><span class="line">sess &#x3D; tf.Session(config&#x3D;tf.ConfigProto(log_device_placement&#x3D;True))</span><br><span class="line">print(sess.run(c))</span><br></pre></td></tr></table></figure>
 
 </li>
 </ol>
@@ -85,7 +72,7 @@ print(sess.run(c))</code></pre>
 <li><p>静态变量是被泛型类的所有实例所共享的。对于声明为<code>MyClass&lt;T&gt;</code>的类，访问其中的静态变量的方法仍然是 <code>MyClass.myStaticVar</code>。不管是通过<code>new MyClass&lt;String&gt;</code>还是<code>new MyClass&lt;Integer&gt;</code>创建的对象，都是共享一个静态变量。</p>
 </li>
 <li><p>泛型的类型参数不能用在Java异常处理的<code>catch</code>语句中。因为异常处理是由JVM在运行时刻来进行的。由于类型信息被擦除，JVM是无法区分两个异常类型<code>MyException&lt;String&gt;</code>和<code>MyException&lt;Integer&gt;</code>的。对于JVM来说，它们都是<code> MyException</code>类型的。也就无法执行与异常对应的<code>catch</code>语句。</p>
-<h4 id="不允许创建参数化类型数组"><a href="#不允许创建参数化类型数组" class="headerlink" title="不允许创建参数化类型数组"></a>不允许创建参数化类型数组</h4><pre><code class="hljs java">Pair&lt;String&gt;[] table = <span class="hljs-keyword">new</span> Pair&lt;String&gt;[<span class="hljs-number">10</span>];  <span class="hljs-comment">// Error</span></code></pre>
+<h4 id="不允许创建参数化类型数组"><a href="#不允许创建参数化类型数组" class="headerlink" title="不允许创建参数化类型数组"></a>不允许创建参数化类型数组</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Pair&lt;String&gt;[] table = <span class="keyword">new</span> Pair&lt;String&gt;[<span class="number">10</span>];  <span class="comment">// Error</span></span><br></pre></td></tr></table></figure>
 
 <p>擦除之后，<code>table</code>的类型是<code>Pair[]</code>。可以把它转换为<code>Object[]</code>:<code>Object[] objarray = table;</code></p>
 <p>数组会记住它的元素类型，如果试图存储其他类型的元素，就会抛出一个<code>ArrayStoreException</code>异常：<code>objarray[0] = &quot;hello&quot;; // Error--component tye is Pair</code></p>
@@ -152,45 +139,7 @@ print(sess.run(c))</code></pre>
 </blockquote>
 <h2 id="解法1-circular-linked-list"><a href="#解法1-circular-linked-list" class="headerlink" title="解法1: circular linked list"></a>解法1: circular linked list</h2><p>循环链表解法很直接，复杂度O(n)</p>
 <p>每个Node就是问题中的一个人，数到谁就删除相应的Node，最后只剩一个Node</p>
-<pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Node</span> </span>&#123;
-    <span class="hljs-keyword">int</span> data;
-    Node next;
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Node</span><span class="hljs-params">(<span class="hljs-keyword">int</span> data)</span></span>&#123;
-        <span class="hljs-keyword">this</span>.data = data;
-    &#125;
-&#125;
-
-<span class="hljs-function"><span class="hljs-keyword">public</span> Node <span class="hljs-title">createCirLinkedList</span><span class="hljs-params">(<span class="hljs-keyword">int</span> N)</span> </span>&#123;
-     Node head = <span class="hljs-keyword">new</span> Node(<span class="hljs-number">1</span>);
-     Node next = head;
-     <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">2</span>; i &lt;= N; i++)&#123;
-         Node tmp = <span class="hljs-keyword">new</span> Node(i);
-         next.next = tmp;
-         next = next.next;
-      &#125;
-      next.next = head;
-      <span class="hljs-keyword">return</span> head;
-&#125;
-
-<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">solve</span><span class="hljs-params">(<span class="hljs-keyword">int</span> N, <span class="hljs-keyword">int</span> m)</span> </span>&#123;
-     <span class="hljs-comment">/* create circurlar linked list */</span>
-     Node head = createCirLinkedList(N);
-     <span class="hljs-comment">/* remove node recursively */</span> 
-     <span class="hljs-keyword">while</span> (head != head.next)&#123;
-         <span class="hljs-comment">/* move head point to the previous node before to-be-deleted node */</span>
-         <span class="hljs-comment">/* head.next is the node to be deleted */</span>
-         <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">1</span>; i &lt; m - <span class="hljs-number">1</span>; i++)&#123;
-             head = head.next;
-         &#125;
-         System.out.print(head.next.data+<span class="hljs-string">&quot;-&gt;&quot;</span>);
-         <span class="hljs-comment">/* remove the m-th node */</span>
-         head.next = head.next.next;
-         head = head.next;
-         &#125;
-         System.out.print(<span class="hljs-string">&quot;Done!\n&quot;</span>);
-         <span class="hljs-keyword">return</span> head.data;
-&#125;
-</code></pre>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> data;</span><br><span class="line">    Node next;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Node</span><span class="params">(<span class="keyword">int</span> data)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.data = data;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Node <span class="title">createCirLinkedList</span><span class="params">(<span class="keyword">int</span> N)</span> </span>&#123;</span><br><span class="line">     Node head = <span class="keyword">new</span> Node(<span class="number">1</span>);</span><br><span class="line">     Node next = head;</span><br><span class="line">     <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= N; i++)&#123;</span><br><span class="line">         Node tmp = <span class="keyword">new</span> Node(i);</span><br><span class="line">         next.next = tmp;</span><br><span class="line">         next = next.next;</span><br><span class="line">      &#125;</span><br><span class="line">      next.next = head;</span><br><span class="line">      <span class="keyword">return</span> head;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">solve</span><span class="params">(<span class="keyword">int</span> N, <span class="keyword">int</span> m)</span> </span>&#123;</span><br><span class="line">     <span class="comment">/* create circurlar linked list */</span></span><br><span class="line">     Node head = createCirLinkedList(N);</span><br><span class="line">     <span class="comment">/* remove node recursively */</span> </span><br><span class="line">     <span class="keyword">while</span> (head != head.next)&#123;</span><br><span class="line">         <span class="comment">/* move head point to the previous node before to-be-deleted node */</span></span><br><span class="line">         <span class="comment">/* head.next is the node to be deleted */</span></span><br><span class="line">         <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; m - <span class="number">1</span>; i++)&#123;</span><br><span class="line">             head = head.next;</span><br><span class="line">         &#125;</span><br><span class="line">         System.out.print(head.next.data+<span class="string">&quot;-&gt;&quot;</span>);</span><br><span class="line">         <span class="comment">/* remove the m-th node */</span></span><br><span class="line">         head.next = head.next.next;</span><br><span class="line">         head = head.next;</span><br><span class="line">         &#125;</span><br><span class="line">         System.out.print(<span class="string">&quot;Done!\n&quot;</span>);</span><br><span class="line">         <span class="keyword">return</span> head.data;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 
 
@@ -217,34 +166,12 @@ print(sess.run(c))</code></pre>
 
              k-1 --&gt; n-1</code></pre>
 <p>n个人玩J(n)时的序号转换成n-1个人玩J(n-1)的序号，这样之，当我们知道子问题J(n-1）的胜利者编号就可以转换成J(n)时的编号，J(1)-&gt;J(2)-&gt;…-&gt;J(n-1)-&gt;J(n), 递推公式就来了</p>
-<pre><code class="hljs plain">   J(n) &#x3D; (J(n-1) + k) % n, k &#x3D; m % n
-&#x3D;&gt; J(n) &#x3D; (J(n-1) + m % n) % n
-        &#x3D; (J(n-1) + m) % n</code></pre>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">   J(n) &#x3D; (J(n-1) + k) % n, k &#x3D; m % n</span><br><span class="line">&#x3D;&gt; J(n) &#x3D; (J(n-1) + m % n) % n</span><br><span class="line">        &#x3D; (J(n-1) + m) % n</span><br></pre></td></tr></table></figure>
 
 <p>递推公式:<br>J(1) = 0<br>J(n) = (J(n-1) + m) % n</p>
-<h3 id="recursive"><a href="#recursive" class="headerlink" title="recursive:"></a>recursive:</h3><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">solve</span><span class="hljs-params">(<span class="hljs-keyword">int</span> N, <span class="hljs-keyword">int</span> m)</span> </span>&#123;
-     <span class="hljs-comment">/* index begin at 0 */</span>
-     <span class="hljs-keyword">if</span> (N == <span class="hljs-number">1</span>) &#123;
-         <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
-     &#125;
-     <span class="hljs-keyword">return</span> (recursiveSolve(N - <span class="hljs-number">1</span>, m) + m) % N;
-&#125;
+<h3 id="recursive"><a href="#recursive" class="headerlink" title="recursive:"></a>recursive:</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">solve</span><span class="params">(<span class="keyword">int</span> N, <span class="keyword">int</span> m)</span> </span>&#123;</span><br><span class="line">     <span class="comment">/* index begin at 0 */</span></span><br><span class="line">     <span class="keyword">if</span> (N == <span class="number">1</span>) &#123;</span><br><span class="line">         <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">return</span> (recursiveSolve(N - <span class="number">1</span>, m) + m) % N;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* when index begins at 1 */</span></span><br><span class="line"><span class="keyword">int</span> res = solve(N, m) + <span class="number">1</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<span class="hljs-comment">/* when index begins at 1 */</span>
-<span class="hljs-keyword">int</span> res = solve(N, m) + <span class="hljs-number">1</span>;
-</code></pre>
-
-<h3 id="iterative"><a href="#iterative" class="headerlink" title="iterative:"></a>iterative:</h3><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">solve</span><span class="hljs-params">(<span class="hljs-keyword">int</span> N, <span class="hljs-keyword">int</span> m)</span> </span>&#123;
-     <span class="hljs-comment">/* index begin at 0 */</span>
-     <span class="hljs-keyword">int</span> res = <span class="hljs-number">0</span>;
-     <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">2</span>; i &lt;= N; i++)&#123;
-         res = (res + m) % i;
-     &#125;
-     <span class="hljs-comment">/* when index begin at 1 */</span>
-     res = res + <span class="hljs-number">1</span>;
-     <span class="hljs-keyword">return</span> res;
-&#125;
-</code></pre>
+<h3 id="iterative"><a href="#iterative" class="headerlink" title="iterative:"></a>iterative:</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">solve</span><span class="params">(<span class="keyword">int</span> N, <span class="keyword">int</span> m)</span> </span>&#123;</span><br><span class="line">     <span class="comment">/* index begin at 0 */</span></span><br><span class="line">     <span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">     <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= N; i++)&#123;</span><br><span class="line">         res = (res + m) % i;</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="comment">/* when index begin at 1 */</span></span><br><span class="line">     res = res + <span class="number">1</span>;</span><br><span class="line">     <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 
 
@@ -370,57 +297,9 @@ print(sess.run(c))</code></pre>
 <pre><code> ![socket通信](../images/socket通信过程.png)</code></pre>
 <ol start="3">
 <li><p>客户端/服务器socket通信简单例子</p>
-<pre><code class="hljs python3">#!&#x2F;usr&#x2F;bin&#x2F;env python3
-   # 客户端
-import socket
-   
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#!&#x2F;usr&#x2F;bin&#x2F;env python3</span><br><span class="line">   # 客户端</span><br><span class="line">import socket</span><br><span class="line">   </span><br><span class="line"></span><br><span class="line">   # create socket descriptor</span><br><span class="line">client &#x3D; socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">   # connect with local loopback address</span><br><span class="line">client.connect((&#39;127.0.0.1&#39;, 9999))</span><br><span class="line">   </span><br><span class="line">   # receive message from server, and send message from console input</span><br><span class="line">   # close the socket until input &#39;exit&#39;</span><br><span class="line">   while True:</span><br><span class="line">   	data &#x3D; client.recv(1024)</span><br><span class="line">   	print(data.decode(&#39;utf-8&#39;))</span><br><span class="line">   	</span><br><span class="line">   	msg &#x3D; input(&#39;&gt;&gt;&gt; &#39;)</span><br><span class="line">   	client.send(msg.encode(&#39;utf-8&#39;))</span><br><span class="line">   	if msg &#x3D;&#x3D; &#39;exit&#39;:</span><br><span class="line">   		break</span><br><span class="line">   client.close()</span><br></pre></td></tr></table></figure>
 
-   # create socket descriptor
-client &#x3D; socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-   # connect with local loopback address
-client.connect((&#39;127.0.0.1&#39;, 9999))
-   
-   # receive message from server, and send message from console input
-   # close the socket until input &#39;exit&#39;
-   while True:
-   	data &#x3D; client.recv(1024)
-   	print(data.decode(&#39;utf-8&#39;))
-   	
-   	msg &#x3D; input(&#39;&gt;&gt;&gt; &#39;)
-   	client.send(msg.encode(&#39;utf-8&#39;))
-   	if msg &#x3D;&#x3D; &#39;exit&#39;:
-   		break
-   client.close()</code></pre>
-
-<pre><code class="hljs python3">#!&#x2F;usr&#x2F;bin&#x2F;env python3
-# 服务器端
-import socket
-import time
-import random
-
-
-s &#x3D; socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((&#39;127.0.0.1&#39;, 9999))
-s.listen(5)  # backlog number
-print(&#39;Waiting for connection...&#39;)
-
-# accept connection from client
-# receive message from client and send a random integer back 
-# until receive &#39;exit&#39;, close the connection and wait for next one
-while True:
-    conn, addr &#x3D; s.accept()
-    conn.send(b&#39;Welcome&#39;)
-    print(&#39;Connected with %s:%s&#39; % addr)
-    while True:
-        data &#x3D; conn.recv(1024)
-        time.sleep(1)  # simple way to unpack block
-        if not data or data.encode(&#39;utf-8&#39;) &#x3D;&#x3D; &#39;exit&#39;:
-            break
-        else:
-            msg &#x3D; random.randint(1, 100)
-            conn.send(str(msg).encode(&#39;utf-8&#39;))
-    conn.close()
-    print(&#39;Connection from %s:%s closed\n&#39; % addr)</code></pre>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#!&#x2F;usr&#x2F;bin&#x2F;env python3</span><br><span class="line"># 服务器端</span><br><span class="line">import socket</span><br><span class="line">import time</span><br><span class="line">import random</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">s &#x3D; socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">s.bind((&#39;127.0.0.1&#39;, 9999))</span><br><span class="line">s.listen(5)  # backlog number</span><br><span class="line">print(&#39;Waiting for connection...&#39;)</span><br><span class="line"></span><br><span class="line"># accept connection from client</span><br><span class="line"># receive message from client and send a random integer back </span><br><span class="line"># until receive &#39;exit&#39;, close the connection and wait for next one</span><br><span class="line">while True:</span><br><span class="line">    conn, addr &#x3D; s.accept()</span><br><span class="line">    conn.send(b&#39;Welcome&#39;)</span><br><span class="line">    print(&#39;Connected with %s:%s&#39; % addr)</span><br><span class="line">    while True:</span><br><span class="line">        data &#x3D; conn.recv(1024)</span><br><span class="line">        time.sleep(1)  # simple way to unpack block</span><br><span class="line">        if not data or data.encode(&#39;utf-8&#39;) &#x3D;&#x3D; &#39;exit&#39;:</span><br><span class="line">            break</span><br><span class="line">        else:</span><br><span class="line">            msg &#x3D; random.randint(1, 100)</span><br><span class="line">            conn.send(str(msg).encode(&#39;utf-8&#39;))</span><br><span class="line">    conn.close()</span><br><span class="line">    print(&#39;Connection from %s:%s closed\n&#39; % addr)</span><br></pre></td></tr></table></figure>
 
 
 
