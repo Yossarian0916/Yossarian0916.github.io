@@ -169,7 +169,7 @@
 <li><p>静态变量是被泛型类的所有实例所共享的。对于声明为<code>MyClass&lt;T&gt;</code>的类，访问其中的静态变量的方法仍然是 <code>MyClass.myStaticVar</code>。不管是通过<code>new MyClass&lt;String&gt;</code>还是<code>new MyClass&lt;Integer&gt;</code>创建的对象，都是共享一个静态变量。</p>
 </li>
 <li><p>泛型的类型参数不能用在Java异常处理的<code>catch</code>语句中。因为异常处理是由JVM在运行时刻来进行的。由于类型信息被擦除，JVM是无法区分两个异常类型<code>MyException&lt;String&gt;</code>和<code>MyException&lt;Integer&gt;</code>的。对于JVM来说，它们都是<code> MyException</code>类型的。也就无法执行与异常对应的<code>catch</code>语句。</p>
-<h4 id="不允许创建参数化类型数组"><a href="#不允许创建参数化类型数组" class="headerlink" title="不允许创建参数化类型数组"></a>不允许创建参数化类型数组</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Pair&lt;String&gt;[] table = <span class="keyword">new</span> Pair&lt;String&gt;[<span class="number">10</span>];  <span class="comment">// Error</span></span><br></pre></td></tr></table></figure>
+<h4 id="不允许创建参数化类型数组"><a href="#不允许创建参数化类型数组" class="headerlink" title="不允许创建参数化类型数组"></a>不允许创建参数化类型数组</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Pair&lt;String&gt;[] table = <span class="keyword">new</span> Pair&lt;String&gt;[<span class="number">10</span>];  <span class="comment">// Error</span></span><br></pre></td></tr></table></figure>
 
 <p>擦除之后，<code>table</code>的类型是<code>Pair[]</code>。可以把它转换为<code>Object[]</code>:<code>Object[] objarray = table;</code></p>
 <p>数组会记住它的元素类型，如果试图存储其他类型的元素，就会抛出一个<code>ArrayStoreException</code>异常：<code>objarray[0] = &quot;hello&quot;; // Error--component tye is Pair</code></p>
@@ -366,7 +366,7 @@
 </script>
 
 <script>
-  var hasLine = 'true';
+  var hasLine = 'false';
   async("//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js", function(){
     $('figure pre').each(function(i, block) {
       var figure = $(this).parents('figure');
