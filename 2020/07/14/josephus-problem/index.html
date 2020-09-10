@@ -195,7 +195,9 @@
              k-2 --&gt; n-2
 
              k-1 --&gt; n-1</code></pre>
-<p>n个人玩J(n)时的序号转换成n-1个人玩J(n-1)的序号，这样之，当我们知道子问题J(n-1）的胜利者编号就可以转换成J(n)时的编号，J(1)-&gt;J(2)-&gt;…-&gt;J(n-1)-&gt;J(n), 递推公式就来了<br>$$J(n) = (J(n-1) + k) % n$$<br>$$k = m % n$$<br>$$=&gt; J(n) = (J(n-1) + m % n) % n = (J(n-1) + m) % n$$</p>
+<p>n个人玩J(n)时的序号转换成n-1个人玩J(n-1)的序号，这样之，当我们知道子问题J(n-1）的胜利者编号就可以转换成J(n)时的编号，J(1)-&gt;J(2)-&gt;…-&gt;J(n-1)-&gt;J(n), 递推公式就来了</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><code class="hljs plain">   J(n) &#x3D; (J(n-1) + k) % n, k &#x3D; m % n<br>&#x3D;&gt; J(n) &#x3D; (J(n-1) + m % n) % n<br>        &#x3D; (J(n-1) + m) % n<br></code></pre></td></tr></table></figure>
+
 <p>递推公式:<br>J(1) = 0<br>J(n) = (J(n-1) + m) % n</p>
 <h3 id="recursive"><a href="#recursive" class="headerlink" title="recursive:"></a>recursive:</h3><figure class="highlight java"><table><tr><td class="code"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">solve</span><span class="hljs-params">(<span class="hljs-keyword">int</span> N, <span class="hljs-keyword">int</span> m)</span> </span>&#123;<br>     <span class="hljs-comment">/* index begin at 0 */</span><br>     <span class="hljs-keyword">if</span> (N == <span class="hljs-number">1</span>) &#123;<br>         <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>     &#125;<br>     <span class="hljs-keyword">return</span> (recursiveSolve(N - <span class="hljs-number">1</span>, m) + m) % N;<br>&#125;<br><br><span class="hljs-comment">// when index begins at 1</span><br><span class="hljs-keyword">int</span> res = solve(N, m) + <span class="hljs-number">1</span>;<br><br></code></pre></td></tr></table></figure>
 
