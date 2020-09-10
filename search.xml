@@ -346,4 +346,56 @@
         <tag>字符串</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Josephus Problem</title>
+    <url>/2020/07/14/josephus-problem/</url>
+    <content><![CDATA[<h1 id="Josephus-Problem"><a href="#Josephus-Problem" class="headerlink" title="Josephus Problem"></a>Josephus Problem</h1><h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述:"></a>问题描述:</h2><p>Josephus problem (or Josephus permutation), 简单说，N个人围成一圈，从某一人（比如第k个）开始报数，报到m的人退出，如此循环，直到最后一个人</p>
+<blockquote>
+<p>People are standing in a circle waiting to be executed. Counting begins at a specified point in the circle and proceeds around the circle in a specified direction. After a specified number of people are skipped, the next person is executed. The procedure is repeated with the remaining people, starting with the next person, going in the same direction and skipping the same number of people, until only one person remains, and is freed. </p>
+<p>​        – from Wikipedia</p>
+</blockquote>
+<h2 id="解法1-circular-linked-list"><a href="#解法1-circular-linked-list" class="headerlink" title="解法1: circular linked list"></a>解法1: circular linked list</h2><p>循环链表解法很直接，复杂度O(n)</p>
+<p>每个Node就是问题中的一个人，数到谁就删除相应的Node，最后只剩一个Node</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> data;</span><br><span class="line">    Node next;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Node</span><span class="params">(<span class="keyword">int</span> data)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.data = data;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Node <span class="title">createCirLinkedList</span><span class="params">(<span class="keyword">int</span> N)</span> </span>&#123;</span><br><span class="line">     Node head = <span class="keyword">new</span> Node(<span class="number">1</span>);</span><br><span class="line">     Node next = head;</span><br><span class="line">     <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= N; i++)&#123;</span><br><span class="line">         Node tmp = <span class="keyword">new</span> Node(i);</span><br><span class="line">         next.next = tmp;</span><br><span class="line">         next = next.next;</span><br><span class="line">      &#125;</span><br><span class="line">      next.next = head;</span><br><span class="line">      <span class="keyword">return</span> head;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">solve</span><span class="params">(<span class="keyword">int</span> N, <span class="keyword">int</span> m)</span> </span>&#123;</span><br><span class="line">     <span class="comment">// create circurlar linked list</span></span><br><span class="line">     Node head = createCirLinkedList(N);</span><br><span class="line">     <span class="comment">// remove node recursively </span></span><br><span class="line">     <span class="keyword">while</span> (head != head.next)&#123;</span><br><span class="line">         <span class="comment">// move head point to the previous node before to-be-deleted node</span></span><br><span class="line">         <span class="comment">// head.next is the node to be deleted</span></span><br><span class="line">         <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; m - <span class="number">1</span>; i++)&#123;</span><br><span class="line">             head = head.next;</span><br><span class="line">         &#125;</span><br><span class="line">         System.out.print(head.next.data+<span class="string">&quot;-&gt;&quot;</span>);</span><br><span class="line">         <span class="comment">// remove the m-th node</span></span><br><span class="line">         head.next = head.next.next;</span><br><span class="line">         head = head.next;</span><br><span class="line">         &#125;</span><br><span class="line">         System.out.print(<span class="string">&quot;Done!\n&quot;</span>);</span><br><span class="line">         <span class="keyword">return</span> head.data;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="解法2-数学方法递推公式"><a href="#解法2-数学方法递推公式" class="headerlink" title="解法2: 数学方法递推公式"></a>解法2: 数学方法递推公式</h2><p>求Josephus的递推就比较有意思啦，正向不行，得反着来。所有人围成一个圆，整个序列从任意一点开始都可，0点（index是0）是谁都一样可以数下去。那么每轮都把上一次被删除的那个人的下一个位置作为新的0点，开始新一轮数数。这样子，每一轮都是重复一样的模式在数数，recursion来了。</p>
+<p>$J(n)$表示n个人玩最后胜利者的编号（编号从0开始），按照这样设定初始条件$J(1) = 0$  </p>
+<p>过程：</p>
+<p>$ J(n) $:</p>
+<p>​    编号$ m % ( n-1 ) $出局，剩下的人组成一个新的环，从$ k = m % n $开始</p>
+<p>​    0, 1, 2, 3, 4, …, k-2, <del>k-1,</del> k, k+1, k+2, k+3, k+4, …, n-1</p>
+<p>$ J(n-1) $:</p>
+<p>​    n-k, n-k+1, n-k+2,…, n-2,   0, 1, 2, 3, 4, …, n-k-1,</p>
+<p>​    编号做一下转换：</p>
+<p>​         J(n)编号 –&gt; J(n-1)编号</p>
+<p>​                k –&gt; 0</p>
+<p>​              k+1 –&gt; 1</p>
+<p>​              k+2 –&gt; 2</p>
+<p>​                  …</p>
+<p>​              k-2 –&gt; n-2</p>
+<p>​              k-1 –&gt; <del>n-1</del></p>
+<p>n个人玩J(n)时的序号转换成n-1个人玩J(n-1)的序号，这样之，当我们知道子问题J(n-1）的胜利者编号就可以转换成J(n)时的编号，J(1)-&gt;J(2)-&gt;…-&gt;J(n-1)-&gt;J(n), 递推公式就来了<br>$$<br>\J(n) = (J(n-1) + k) % n<br>\k = m % n<br>\=&gt; J(n) = (J(n-1) + m % n) % n = (J(n-1) + m) % n<br>$$</p>
+<p>递推公式:</p>
+<p>J(1) = 0</p>
+<p>J(n) = (J(n-1) + m) % n</p>
+<h4 id="recursive"><a href="#recursive" class="headerlink" title="recursive:"></a>recursive:</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">solve</span><span class="params">(<span class="keyword">int</span> N, <span class="keyword">int</span> m)</span> </span>&#123;</span><br><span class="line">     <span class="comment">/* index begin at 0 */</span></span><br><span class="line">     <span class="keyword">if</span> (N == <span class="number">1</span>) &#123;</span><br><span class="line">         <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">return</span> (recursiveSolve(N - <span class="number">1</span>, m) + m) % N;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// when index begins at 1</span></span><br><span class="line"><span class="keyword">int</span> res = solve(N, m) + <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="iterative"><a href="#iterative" class="headerlink" title="iterative:"></a>iterative:</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">solve</span><span class="params">(<span class="keyword">int</span> N, <span class="keyword">int</span> m)</span> </span>&#123;</span><br><span class="line">     <span class="comment">/* index begin at 0 */</span></span><br><span class="line">     <span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">     <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= N; i++)&#123;</span><br><span class="line">         res = (res + m) % i;</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="comment">// when index begin at 1</span></span><br><span class="line">     res = res + <span class="number">1</span>;</span><br><span class="line">     <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference:"></a>Reference:</h2><p><a href="https://en.wikipedia.org/wiki/Josephus_problem">Josephus problem wikipedia</a></p>
+<p><a href="https://www.cnblogs.com/jclian91/p/8660123.html">Josephus Problem的详细算法</a></p>
+]]></content>
+      <tags>
+        <tag>Algorithm</tag>
+        <tag>LeetCode</tag>
+      </tags>
+  </entry>
 </search>
