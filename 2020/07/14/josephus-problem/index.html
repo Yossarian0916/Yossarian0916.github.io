@@ -190,17 +190,17 @@
 &#125;
 
 <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">solve</span><span class="hljs-params">(<span class="hljs-keyword">int</span> N, <span class="hljs-keyword">int</span> m)</span> </span>&#123;
-     <span class="hljs-comment">// create circurlar linked list</span>
+     <span class="hljs-comment">/* create circurlar linked list */</span>
      Node head = createCirLinkedList(N);
-     <span class="hljs-comment">// remove node recursively </span>
+     <span class="hljs-comment">/* remove node recursively */</span> 
      <span class="hljs-keyword">while</span> (head != head.next)&#123;
-         <span class="hljs-comment">// move head point to the previous node before to-be-deleted node</span>
-         <span class="hljs-comment">// head.next is the node to be deleted</span>
+         <span class="hljs-comment">/* move head point to the previous node before to-be-deleted node */</span>
+         <span class="hljs-comment">/* head.next is the node to be deleted */</span>
          <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">1</span>; i &lt; m - <span class="hljs-number">1</span>; i++)&#123;
              head = head.next;
          &#125;
          System.out.print(head.next.data+<span class="hljs-string">&quot;-&gt;&quot;</span>);
-         <span class="hljs-comment">// remove the m-th node</span>
+         <span class="hljs-comment">/* remove the m-th node */</span>
          head.next = head.next.next;
          head = head.next;
          &#125;
@@ -247,7 +247,7 @@
      <span class="hljs-keyword">return</span> (recursiveSolve(N - <span class="hljs-number">1</span>, m) + m) % N;
 &#125;
 
-<span class="hljs-comment">// when index begins at 1</span>
+<span class="hljs-comment">/* when index begins at 1 */</span>
 <span class="hljs-keyword">int</span> res = solve(N, m) + <span class="hljs-number">1</span>;
 </code></pre>
 
@@ -257,7 +257,7 @@
      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">2</span>; i &lt;= N; i++)&#123;
          res = (res + m) % i;
      &#125;
-     <span class="hljs-comment">// when index begin at 1</span>
+     <span class="hljs-comment">/* when index begin at 1 */</span>
      res = res + <span class="hljs-number">1</span>;
      <span class="hljs-keyword">return</span> res;
 &#125;
