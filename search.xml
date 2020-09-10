@@ -1,6 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Java泛型</title>
+    <url>/2020/03/04/java_generics/</url>
+    <content><![CDATA[<h3 id="Java泛型-类型擦除"><a href="#Java泛型-类型擦除" class="headerlink" title="Java泛型 类型擦除"></a>Java泛型 类型擦除</h3><p>正确理解泛型概念的首要前提是理解类型擦除（type erasure）。 Java中的泛型基本上都是在编译器这个层次来实现的。在生成的Java字节代码中是不包含泛型中的类型信息的。使用泛型的时候加上的类型参数，会被编译器在编译的时候去掉。这个过程就称为类型擦除。如在代码中定义的<code>List&lt;Object&gt;</code>和<code>List&lt;String&gt;</code>等类型，在编译之后都会变成List。JVM看到的只是<code>List</code>，而由泛型附加的类型信息对JVM来说是不可见的。Java编译器会在编译时尽可能的发现可能出错的地方，但是仍然无法避免在运行时刻出现类型转换异常的情况。<a href="https://codefine.site/1759.html">2</a></p>
+<h3 id="Java泛型特性"><a href="#Java泛型特性" class="headerlink" title="Java泛型特性"></a>Java泛型特性</h3><ul>
+<li><p>泛型类并没有自己独有的Class类对象。比如并不存在<code>List&lt;String&gt;.class</code>或是<code>List&lt;Integer&gt;.class</code>，而只有<code>List.class</code>。</p>
+</li>
+<li><p>静态变量是被泛型类的所有实例所共享的。对于声明为<code>MyClass&lt;T&gt;</code>的类，访问其中的静态变量的方法仍然是 <code>MyClass.myStaticVar</code>。不管是通过<code>new MyClass&lt;String&gt;</code>还是<code>new MyClass&lt;Integer&gt;</code>创建的对象，都是共享一个静态变量。</p>
+</li>
+<li><p>泛型的类型参数不能用在Java异常处理的<code>catch</code>语句中。因为异常处理是由JVM在运行时刻来进行的。由于类型信息被擦除，JVM是无法区分两个异常类型<code>MyException&lt;String&gt;</code>和<code>MyException&lt;Integer&gt;</code>的。对于JVM来说，它们都是<code> MyException</code>类型的。也就无法执行与异常对应的<code>catch</code>语句。</p>
+<h4 id="不允许创建参数化类型数组"><a href="#不允许创建参数化类型数组" class="headerlink" title="不允许创建参数化类型数组"></a>不允许创建参数化类型数组</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Pair&lt;String&gt;[] table = <span class="keyword">new</span> Pair&lt;String&gt;[<span class="number">10</span>];  <span class="comment">// Error</span></span><br></pre></td></tr></table></figure>
+
+<p>擦除之后，<code>table</code>的类型是<code>Pair[]</code>。可以把它转换为<code>Object[]</code>:<code>Object[] objarray = table;</code></p>
+<p>数组会记住它的元素类型，如果试图存储其他类型的元素，就会抛出一个<code>ArrayStoreException</code>异常：<code>objarray[0] = &quot;hello&quot;; // Error--component tye is Pair</code></p>
+<p>不过对于泛型类型， 擦除会使这种机制无效。</p>
+<p><code>objarray[0] = new Pair&lt;Employee&gt;()</code>能够通过数组存储检查，不过仍会导致一个类型错误。</p>
+<p>处于安全考虑呢，Java不允许创建参数化类型的数组。</p>
+</li>
+</ul>
+<h3 id="Java泛型与C-模板-差异之处"><a href="#Java泛型与C-模板-差异之处" class="headerlink" title="Java泛型与C++模板 差异之处"></a>Java泛型与C++模板 差异之处</h3><p>“泛型编程”这个概念最早就是来源于C++当初设计STL时所引入的模板（Template），而为什么要引入模板呢，因为STL要完成这样一个目标：设计一套通用的，不依赖类型的，高效的的算法（例如<code>std::sort</code>）和数据结构（例如<code>std::list</code>）。关于通用性，运行时多态（Polymorphism）可以做到（例如很多高级语言的继承（Inheritance）机制，接口（Interface）机制），但是C++作为一门相对底层的语言，对运行效率的要求是很严格的，而运行时多态会影响效率（例如成员函数只有在运行时才知道调用哪个），所以设计STL的人就创造了一种编译时多态技术，即模板。</p>
+<p>那什么又是编译时多态呢，简单点说就是让编译器帮我确定类型，我写程序时只要标记下这里我要用“某种类型”的对象，至于具体是什么类型我不关心，你编译器帮我确定，编译完成后在运行时绝对是类型确定的，这样就大大提高了运行效率，反之对编译就增加了很多工作，而且生成的目标代码也会大大增加。所以对C++来说，所谓“泛型（Generics）”，并不是说编译器不知道类型，而是针对程序员来说的，这也正是通用性的体现。<a href="https://www.zhihu.com/question/33304378/answer/9171918">1</a></p>
+<p>在 C++ 模板中，编译器使用提供的类型参数来扩充模板，因此，为 <code>List&lt;A&gt;</code> 生成的 C++ 代码不同于为 <code>List&lt;B&gt;</code> 生成的代码，<code>List&lt;A&gt;</code> 和 <code>List&lt;B&gt;</code> 实际上是两个不同的类。而 Java 中的泛型则以不同的方式实现，编译器仅仅对这些类型参数进行擦除和替换。类型 <code>ArrayList&lt;Integer&gt;</code> 和 <code>ArrayList&lt;String&gt;</code> 的对象共享相同的类，并且只存在一个 <code>ArrayList</code> 类。<a href="https://www.ibm.com/developerworks/cn/java/j-lo-gj/index.html">3</a></p>
+<h2 id="References"><a href="#References" class="headerlink" title="References:"></a>References:</h2><ol>
+<li>Java核心技术</li>
+<li><a href="https://www.zhihu.com/question/33304378/answer/9171918">知乎Vesion回答</a></li>
+<li><a href="https://codefine.site/1759.html">Java泛型：类型檫除、模板和泛型传递</a></li>
+<li><a href="https://www.ibm.com/developerworks/cn/java/j-lo-gj/index.html">Java 中的泛型与 C++ 模板的比较</a></li>
+</ol>
+]]></content>
+      <tags>
+        <tag>Java</tag>
+        <tag>Java Generics</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>tensorflow-gpu installation</title>
     <url>/2019/10/04/GPU%E5%8A%A0%E9%80%9F%E7%89%88TensorFlow%E5%AE%89%E8%A3%85%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</url>
     <content><![CDATA[<h2 id="GPU加速版TensorFlow安装踩坑记录"><a href="#GPU加速版TensorFlow安装踩坑记录" class="headerlink" title="GPU加速版TensorFlow安装踩坑记录"></a>GPU加速版TensorFlow安装踩坑记录</h2><p>System information:</p>
@@ -63,73 +97,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Java泛型</title>
-    <url>/2020/03/04/java_generics/</url>
-    <content><![CDATA[<h3 id="Java泛型-类型擦除"><a href="#Java泛型-类型擦除" class="headerlink" title="Java泛型 类型擦除"></a>Java泛型 类型擦除</h3><p>正确理解泛型概念的首要前提是理解类型擦除（type erasure）。 Java中的泛型基本上都是在编译器这个层次来实现的。在生成的Java字节代码中是不包含泛型中的类型信息的。使用泛型的时候加上的类型参数，会被编译器在编译的时候去掉。这个过程就称为类型擦除。如在代码中定义的<code>List&lt;Object&gt;</code>和<code>List&lt;String&gt;</code>等类型，在编译之后都会变成List。JVM看到的只是<code>List</code>，而由泛型附加的类型信息对JVM来说是不可见的。Java编译器会在编译时尽可能的发现可能出错的地方，但是仍然无法避免在运行时刻出现类型转换异常的情况。<a href="https://codefine.site/1759.html">2</a></p>
-<h3 id="Java泛型特性"><a href="#Java泛型特性" class="headerlink" title="Java泛型特性"></a>Java泛型特性</h3><ul>
-<li><p>泛型类并没有自己独有的Class类对象。比如并不存在<code>List&lt;String&gt;.class</code>或是<code>List&lt;Integer&gt;.class</code>，而只有<code>List.class</code>。</p>
-</li>
-<li><p>静态变量是被泛型类的所有实例所共享的。对于声明为<code>MyClass&lt;T&gt;</code>的类，访问其中的静态变量的方法仍然是 <code>MyClass.myStaticVar</code>。不管是通过<code>new MyClass&lt;String&gt;</code>还是<code>new MyClass&lt;Integer&gt;</code>创建的对象，都是共享一个静态变量。</p>
-</li>
-<li><p>泛型的类型参数不能用在Java异常处理的<code>catch</code>语句中。因为异常处理是由JVM在运行时刻来进行的。由于类型信息被擦除，JVM是无法区分两个异常类型<code>MyException&lt;String&gt;</code>和<code>MyException&lt;Integer&gt;</code>的。对于JVM来说，它们都是<code> MyException</code>类型的。也就无法执行与异常对应的<code>catch</code>语句。</p>
-<h4 id="不允许创建参数化类型数组"><a href="#不允许创建参数化类型数组" class="headerlink" title="不允许创建参数化类型数组"></a>不允许创建参数化类型数组</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Pair&lt;String&gt;[] table = <span class="keyword">new</span> Pair&lt;String&gt;[<span class="number">10</span>];  <span class="comment">// Error</span></span><br></pre></td></tr></table></figure>
-
-<p>擦除之后，<code>table</code>的类型是<code>Pair[]</code>。可以把它转换为<code>Object[]</code>:<code>Object[] objarray = table;</code></p>
-<p>数组会记住它的元素类型，如果试图存储其他类型的元素，就会抛出一个<code>ArrayStoreException</code>异常：<code>objarray[0] = &quot;hello&quot;; // Error--component tye is Pair</code></p>
-<p>不过对于泛型类型， 擦除会使这种机制无效。</p>
-<p><code>objarray[0] = new Pair&lt;Employee&gt;()</code>能够通过数组存储检查，不过仍会导致一个类型错误。</p>
-<p>处于安全考虑呢，Java不允许创建参数化类型的数组。</p>
-</li>
-</ul>
-<h3 id="Java泛型与C-模板-差异之处"><a href="#Java泛型与C-模板-差异之处" class="headerlink" title="Java泛型与C++模板 差异之处"></a>Java泛型与C++模板 差异之处</h3><p>“泛型编程”这个概念最早就是来源于C++当初设计STL时所引入的模板（Template），而为什么要引入模板呢，因为STL要完成这样一个目标：设计一套通用的，不依赖类型的，高效的的算法（例如<code>std::sort</code>）和数据结构（例如<code>std::list</code>）。关于通用性，运行时多态（Polymorphism）可以做到（例如很多高级语言的继承（Inheritance）机制，接口（Interface）机制），但是C++作为一门相对底层的语言，对运行效率的要求是很严格的，而运行时多态会影响效率（例如成员函数只有在运行时才知道调用哪个），所以设计STL的人就创造了一种编译时多态技术，即模板。</p>
-<p>那什么又是编译时多态呢，简单点说就是让编译器帮我确定类型，我写程序时只要标记下这里我要用“某种类型”的对象，至于具体是什么类型我不关心，你编译器帮我确定，编译完成后在运行时绝对是类型确定的，这样就大大提高了运行效率，反之对编译就增加了很多工作，而且生成的目标代码也会大大增加。所以对C++来说，所谓“泛型（Generics）”，并不是说编译器不知道类型，而是针对程序员来说的，这也正是通用性的体现。<a href="https://www.zhihu.com/question/33304378/answer/9171918">1</a></p>
-<p>在 C++ 模板中，编译器使用提供的类型参数来扩充模板，因此，为 <code>List&lt;A&gt;</code> 生成的 C++ 代码不同于为 <code>List&lt;B&gt;</code> 生成的代码，<code>List&lt;A&gt;</code> 和 <code>List&lt;B&gt;</code> 实际上是两个不同的类。而 Java 中的泛型则以不同的方式实现，编译器仅仅对这些类型参数进行擦除和替换。类型 <code>ArrayList&lt;Integer&gt;</code> 和 <code>ArrayList&lt;String&gt;</code> 的对象共享相同的类，并且只存在一个 <code>ArrayList</code> 类。<a href="https://www.ibm.com/developerworks/cn/java/j-lo-gj/index.html">3</a></p>
-<h2 id="References"><a href="#References" class="headerlink" title="References:"></a>References:</h2><ol>
-<li>Java核心技术</li>
-<li><a href="https://www.zhihu.com/question/33304378/answer/9171918">知乎Vesion回答</a></li>
-<li><a href="https://codefine.site/1759.html">Java泛型：类型檫除、模板和泛型传递</a></li>
-<li><a href="https://www.ibm.com/developerworks/cn/java/j-lo-gj/index.html">Java 中的泛型与 C++ 模板的比较</a></li>
-</ol>
-]]></content>
-      <tags>
-        <tag>Java</tag>
-        <tag>Java Generics</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Java IO</title>
-    <url>/2020/03/31/java_io/</url>
-    <content><![CDATA[<h1 id="Java-I-O"><a href="#Java-I-O" class="headerlink" title="Java I/O"></a>Java I/O</h1><p>I/O流 概念： 流数据从一端传到另一端</p>
-<p>Java I/O流分为三大类：</p>
-<ul>
-<li>按照读写单元（bit or byte）：字节流，字符流</li>
-<li>按照流的方向：输入流，输出流</li>
-<li>按照功能分：节点流，处理流</li>
-</ul>
-<p>字节流和字符流：</p>
-<ul>
-<li>当我们读取文件然后再写入其他文件时，不用过多的关注读取的内容时，通常使用的是字节流，因为这相当于是在处理二进制文件。读取数据效率高，并且保持数据的完整性；当我们读取文件的内容，并对文件的内容进行加工时，通常使用字符流。</li>
-</ul>
-<p>节点流和处理流：</p>
-<ul>
-<li>节点流：即从特定的数据源读取写入数据</li>
-<li>处理流：在已经存在的节点流或者处理流上，进行装饰提供更强大的读写功能<ol>
-<li>缓冲流（Buffered）带缓冲区，在节点流上添加缓冲区（例如：<code>new BufferedInputStream(new FileInputStream())</code>），这样避免读取文件时，大量进行硬盘的读写，提高读写效率</li>
-<li>转换流（StreamReader）即字节流和字符流的相互转换，比如：在进行读写字节流时，想调用读取字符流的函数，就可以通过转换流。<code>InputStreamReader in = new InputStreamReader(new InputStream())</code> <strong>注意只能字节流=&gt;字符流</strong></li>
-<li>数据流（Data）当读取写入具体的数值数据时，<code>DataInputStream</code>可以让你从<code>InputStream</code>读取Java基本类型来代替原始字节。如果读取的数据是由大于一个字节的Java基本类型构成，如int，long，float，double等，那么用<code>DataInputStream</code>是很方便的。读取的时候记住先读先写的原则，顺序不能乱，因为Java基本类型都是大于一个字节的，顺序不对，读取出来会出现乱码。所以在用<code>DataInputStream</code>的时候要么为文件中的数据采用固定格式，要么将额外信息保存到文件中，以便解析的时候确定数据位置和类型使用。</li>
-</ol>
-</li>
-</ul>
-<h3 id="Java-IO类结构"><a href="#Java-IO类结构" class="headerlink" title="Java IO类结构"></a>Java IO类结构</h3><p><strong><code>InputStream, OutputSteam, Reader, Writer</code>都是抽象类</strong></p>
-<p>贴张图：</p>
-<p><img src="/../images/java_IO.jpeg"></p>
-<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><p><a href="https://blog.csdn.net/qq_16558621/article/details/51377887">Java流机制详解</a><br><a href="https://blog.csdn.net/zhaoyanjun6/article/details/54292148">Java IO流学习总结一：输入输出流</a></p>
-]]></content>
-      <tags>
-        <tag>Java</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Josephus Problem</title>
     <url>/2020/07/14/josephus-problem/</url>
     <content><![CDATA[<h1 id="Josephus-Problem"><a href="#Josephus-Problem" class="headerlink" title="Josephus Problem"></a>Josephus Problem</h1><h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述:"></a>问题描述:</h2><p>Josephus problem (or Josephus permutation), 简单说，N个人围成一圈，从某一人（比如第k个）开始报数，报到m的人退出，如此循环，直到最后一个人</p>
@@ -177,6 +144,39 @@
       <tags>
         <tag>Algorithm</tag>
         <tag>LeetCode</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Java IO</title>
+    <url>/2020/03/31/java_io/</url>
+    <content><![CDATA[<h1 id="Java-I-O"><a href="#Java-I-O" class="headerlink" title="Java I/O"></a>Java I/O</h1><p>I/O流 概念： 流数据从一端传到另一端</p>
+<p>Java I/O流分为三大类：</p>
+<ul>
+<li>按照读写单元（bit or byte）：字节流，字符流</li>
+<li>按照流的方向：输入流，输出流</li>
+<li>按照功能分：节点流，处理流</li>
+</ul>
+<p>字节流和字符流：</p>
+<ul>
+<li>当我们读取文件然后再写入其他文件时，不用过多的关注读取的内容时，通常使用的是字节流，因为这相当于是在处理二进制文件。读取数据效率高，并且保持数据的完整性；当我们读取文件的内容，并对文件的内容进行加工时，通常使用字符流。</li>
+</ul>
+<p>节点流和处理流：</p>
+<ul>
+<li>节点流：即从特定的数据源读取写入数据</li>
+<li>处理流：在已经存在的节点流或者处理流上，进行装饰提供更强大的读写功能<ol>
+<li>缓冲流（Buffered）带缓冲区，在节点流上添加缓冲区（例如：<code>new BufferedInputStream(new FileInputStream())</code>），这样避免读取文件时，大量进行硬盘的读写，提高读写效率</li>
+<li>转换流（StreamReader）即字节流和字符流的相互转换，比如：在进行读写字节流时，想调用读取字符流的函数，就可以通过转换流。<code>InputStreamReader in = new InputStreamReader(new InputStream())</code> <strong>注意只能字节流=&gt;字符流</strong></li>
+<li>数据流（Data）当读取写入具体的数值数据时，<code>DataInputStream</code>可以让你从<code>InputStream</code>读取Java基本类型来代替原始字节。如果读取的数据是由大于一个字节的Java基本类型构成，如int，long，float，double等，那么用<code>DataInputStream</code>是很方便的。读取的时候记住先读先写的原则，顺序不能乱，因为Java基本类型都是大于一个字节的，顺序不对，读取出来会出现乱码。所以在用<code>DataInputStream</code>的时候要么为文件中的数据采用固定格式，要么将额外信息保存到文件中，以便解析的时候确定数据位置和类型使用。</li>
+</ol>
+</li>
+</ul>
+<h3 id="Java-IO类结构"><a href="#Java-IO类结构" class="headerlink" title="Java IO类结构"></a>Java IO类结构</h3><p><strong><code>InputStream, OutputSteam, Reader, Writer</code>都是抽象类</strong></p>
+<p>贴张图：</p>
+<p><img src="/../images/java_IO.jpeg"></p>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><p><a href="https://blog.csdn.net/qq_16558621/article/details/51377887">Java流机制详解</a><br><a href="https://blog.csdn.net/zhaoyanjun6/article/details/54292148">Java IO流学习总结一：输入输出流</a></p>
+]]></content>
+      <tags>
+        <tag>Java</tag>
       </tags>
   </entry>
   <entry>
