@@ -97,39 +97,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Java IO</title>
-    <url>/2020/03/31/java_io/</url>
-    <content><![CDATA[<h1 id="Java-I-O"><a href="#Java-I-O" class="headerlink" title="Java I/O"></a>Java I/O</h1><p>I/O流 概念： 流数据从一端传到另一端</p>
-<p>Java I/O流分为三大类：</p>
-<ul>
-<li>按照读写单元（bit or byte）：字节流，字符流</li>
-<li>按照流的方向：输入流，输出流</li>
-<li>按照功能分：节点流，处理流</li>
-</ul>
-<p>字节流和字符流：</p>
-<ul>
-<li>当我们读取文件然后再写入其他文件时，不用过多的关注读取的内容时，通常使用的是字节流，因为这相当于是在处理二进制文件。读取数据效率高，并且保持数据的完整性；当我们读取文件的内容，并对文件的内容进行加工时，通常使用字符流。</li>
-</ul>
-<p>节点流和处理流：</p>
-<ul>
-<li>节点流：即从特定的数据源读取写入数据</li>
-<li>处理流：在已经存在的节点流或者处理流上，进行装饰提供更强大的读写功能<ol>
-<li>缓冲流（Buffered）带缓冲区，在节点流上添加缓冲区（例如：<code>new BufferedInputStream(new FileInputStream())</code>），这样避免读取文件时，大量进行硬盘的读写，提高读写效率</li>
-<li>转换流（StreamReader）即字节流和字符流的相互转换，比如：在进行读写字节流时，想调用读取字符流的函数，就可以通过转换流。<code>InputStreamReader in = new InputStreamReader(new InputStream())</code> <strong>注意只能字节流=&gt;字符流</strong></li>
-<li>数据流（Data）当读取写入具体的数值数据时，<code>DataInputStream</code>可以让你从<code>InputStream</code>读取Java基本类型来代替原始字节。如果读取的数据是由大于一个字节的Java基本类型构成，如int，long，float，double等，那么用<code>DataInputStream</code>是很方便的。读取的时候记住先读先写的原则，顺序不能乱，因为Java基本类型都是大于一个字节的，顺序不对，读取出来会出现乱码。所以在用<code>DataInputStream</code>的时候要么为文件中的数据采用固定格式，要么将额外信息保存到文件中，以便解析的时候确定数据位置和类型使用。</li>
-</ol>
-</li>
-</ul>
-<h3 id="Java-IO类结构"><a href="#Java-IO类结构" class="headerlink" title="Java IO类结构"></a>Java IO类结构</h3><p><strong><code>InputStream, OutputSteam, Reader, Writer</code>都是抽象类</strong></p>
-<p>贴张图：</p>
-<p><img src="/../images/java_IO.jpeg"></p>
-<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><p><a href="https://blog.csdn.net/qq_16558621/article/details/51377887">Java流机制详解</a><br><a href="https://blog.csdn.net/zhaoyanjun6/article/details/54292148">Java IO流学习总结一：输入输出流</a></p>
-]]></content>
-      <tags>
-        <tag>Java</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Josephus Problem</title>
     <url>/2020/07/14/josephus-problem/</url>
     <content><![CDATA[<h1 id="Josephus-Problem"><a href="#Josephus-Problem" class="headerlink" title="Josephus Problem"></a>Josephus Problem</h1><h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述:"></a>问题描述:</h2><p>Josephus problem (or Josephus permutation), 简单说，N个人围成一圈，从某一人（比如第k个）开始报数，报到m的人退出，如此循环，直到最后一个人</p>
@@ -169,9 +136,9 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">   J(n) &#x3D; (J(n-1) + k) % n, k &#x3D; m % n</span><br><span class="line">&#x3D;&gt; J(n) &#x3D; (J(n-1) + m % n) % n</span><br><span class="line">        &#x3D; (J(n-1) + m) % n</span><br></pre></td></tr></table></figure>
 
 <p>递推公式:<br>J(1) = 0<br>J(n) = (J(n-1) + m) % n</p>
-<h3 id="recursive"><a href="#recursive" class="headerlink" title="recursive:"></a>recursive:</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">solve</span><span class="params">(<span class="keyword">int</span> N, <span class="keyword">int</span> m)</span> </span>&#123;</span><br><span class="line">     <span class="comment">/* index begin at 0 */</span></span><br><span class="line">     <span class="keyword">if</span> (N == <span class="number">1</span>) &#123;</span><br><span class="line">         <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">return</span> (recursiveSolve(N - <span class="number">1</span>, m) + m) % N;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* when index begins at 1 */</span></span><br><span class="line"><span class="keyword">int</span> res = solve(N, m) + <span class="number">1</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="recursive"><a href="#recursive" class="headerlink" title="recursive:"></a>recursive:</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">solve</span><span class="params">(<span class="keyword">int</span> N, <span class="keyword">int</span> m)</span> </span>&#123;</span><br><span class="line">     <span class="comment">/* index begin at 0 */</span></span><br><span class="line">     <span class="keyword">if</span> (N == <span class="number">1</span>) &#123;</span><br><span class="line">         <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">return</span> (recursiveSolve(N - <span class="number">1</span>, m) + m) % N;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* when index begins at 1 */</span></span><br><span class="line"><span class="keyword">int</span> res = solve(N, m) + <span class="number">1</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<h3 id="iterative"><a href="#iterative" class="headerlink" title="iterative:"></a>iterative:</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">solve</span><span class="params">(<span class="keyword">int</span> N, <span class="keyword">int</span> m)</span> </span>&#123;</span><br><span class="line">     <span class="comment">/* index begin at 0 */</span></span><br><span class="line">     <span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">     <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= N; i++)&#123;</span><br><span class="line">         res = (res + m) % i;</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="comment">/* when index begin at 1 */</span></span><br><span class="line">     res = res + <span class="number">1</span>;</span><br><span class="line">     <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="iterative"><a href="#iterative" class="headerlink" title="iterative:"></a>iterative:</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">solve</span><span class="params">(<span class="keyword">int</span> N, <span class="keyword">int</span> m)</span> </span>&#123;</span><br><span class="line">     <span class="comment">/* index begin at 0 */</span></span><br><span class="line">     <span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">     <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= N; i++)&#123;</span><br><span class="line">         res = (res + m) % i;</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="comment">/* when index begin at 1 */</span></span><br><span class="line">     res = res + <span class="number">1</span>;</span><br><span class="line">     <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 
 
@@ -183,6 +150,39 @@
       <tags>
         <tag>Algorithm</tag>
         <tag>LeetCode</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Java IO</title>
+    <url>/2020/03/31/java_io/</url>
+    <content><![CDATA[<h1 id="Java-I-O"><a href="#Java-I-O" class="headerlink" title="Java I/O"></a>Java I/O</h1><p>I/O流 概念： 流数据从一端传到另一端</p>
+<p>Java I/O流分为三大类：</p>
+<ul>
+<li>按照读写单元（bit or byte）：字节流，字符流</li>
+<li>按照流的方向：输入流，输出流</li>
+<li>按照功能分：节点流，处理流</li>
+</ul>
+<p>字节流和字符流：</p>
+<ul>
+<li>当我们读取文件然后再写入其他文件时，不用过多的关注读取的内容时，通常使用的是字节流，因为这相当于是在处理二进制文件。读取数据效率高，并且保持数据的完整性；当我们读取文件的内容，并对文件的内容进行加工时，通常使用字符流。</li>
+</ul>
+<p>节点流和处理流：</p>
+<ul>
+<li>节点流：即从特定的数据源读取写入数据</li>
+<li>处理流：在已经存在的节点流或者处理流上，进行装饰提供更强大的读写功能<ol>
+<li>缓冲流（Buffered）带缓冲区，在节点流上添加缓冲区（例如：<code>new BufferedInputStream(new FileInputStream())</code>），这样避免读取文件时，大量进行硬盘的读写，提高读写效率</li>
+<li>转换流（StreamReader）即字节流和字符流的相互转换，比如：在进行读写字节流时，想调用读取字符流的函数，就可以通过转换流。<code>InputStreamReader in = new InputStreamReader(new InputStream())</code> <strong>注意只能字节流=&gt;字符流</strong></li>
+<li>数据流（Data）当读取写入具体的数值数据时，<code>DataInputStream</code>可以让你从<code>InputStream</code>读取Java基本类型来代替原始字节。如果读取的数据是由大于一个字节的Java基本类型构成，如int，long，float，double等，那么用<code>DataInputStream</code>是很方便的。读取的时候记住先读先写的原则，顺序不能乱，因为Java基本类型都是大于一个字节的，顺序不对，读取出来会出现乱码。所以在用<code>DataInputStream</code>的时候要么为文件中的数据采用固定格式，要么将额外信息保存到文件中，以便解析的时候确定数据位置和类型使用。</li>
+</ol>
+</li>
+</ul>
+<h3 id="Java-IO类结构"><a href="#Java-IO类结构" class="headerlink" title="Java IO类结构"></a>Java IO类结构</h3><p><strong><code>InputStream, OutputSteam, Reader, Writer</code>都是抽象类</strong></p>
+<p>贴张图：</p>
+<p><img src="/../images/java_IO.jpeg"></p>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><p><a href="https://blog.csdn.net/qq_16558621/article/details/51377887">Java流机制详解</a><br><a href="https://blog.csdn.net/zhaoyanjun6/article/details/54292148">Java IO流学习总结一：输入输出流</a></p>
+]]></content>
+      <tags>
+        <tag>Java</tag>
       </tags>
   </entry>
   <entry>
