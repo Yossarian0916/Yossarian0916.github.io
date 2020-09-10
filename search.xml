@@ -63,40 +63,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Java泛型</title>
-    <url>/2020/03/04/java_generics/</url>
-    <content><![CDATA[<h3 id="Java泛型-类型擦除"><a href="#Java泛型-类型擦除" class="headerlink" title="Java泛型 类型擦除"></a>Java泛型 类型擦除</h3><p>正确理解泛型概念的首要前提是理解类型擦除（type erasure）。 Java中的泛型基本上都是在编译器这个层次来实现的。在生成的Java字节代码中是不包含泛型中的类型信息的。使用泛型的时候加上的类型参数，会被编译器在编译的时候去掉。这个过程就称为类型擦除。如在代码中定义的<code>List&lt;Object&gt;</code>和<code>List&lt;String&gt;</code>等类型，在编译之后都会变成List。JVM看到的只是<code>List</code>，而由泛型附加的类型信息对JVM来说是不可见的。Java编译器会在编译时尽可能的发现可能出错的地方，但是仍然无法避免在运行时刻出现类型转换异常的情况。<a href="https://codefine.site/1759.html">2</a></p>
-<h3 id="Java泛型特性"><a href="#Java泛型特性" class="headerlink" title="Java泛型特性"></a>Java泛型特性</h3><ul>
-<li><p>泛型类并没有自己独有的Class类对象。比如并不存在<code>List&lt;String&gt;.class</code>或是<code>List&lt;Integer&gt;.class</code>，而只有<code>List.class</code>。</p>
-</li>
-<li><p>静态变量是被泛型类的所有实例所共享的。对于声明为<code>MyClass&lt;T&gt;</code>的类，访问其中的静态变量的方法仍然是 <code>MyClass.myStaticVar</code>。不管是通过<code>new MyClass&lt;String&gt;</code>还是<code>new MyClass&lt;Integer&gt;</code>创建的对象，都是共享一个静态变量。</p>
-</li>
-<li><p>泛型的类型参数不能用在Java异常处理的<code>catch</code>语句中。因为异常处理是由JVM在运行时刻来进行的。由于类型信息被擦除，JVM是无法区分两个异常类型<code>MyException&lt;String&gt;</code>和<code>MyException&lt;Integer&gt;</code>的。对于JVM来说，它们都是<code> MyException</code>类型的。也就无法执行与异常对应的<code>catch</code>语句。</p>
-<h4 id="不允许创建参数化类型数组"><a href="#不允许创建参数化类型数组" class="headerlink" title="不允许创建参数化类型数组"></a>不允许创建参数化类型数组</h4><figure class="highlight java"><table><tr><td class="code"><pre><code class="hljs java">Pair&lt;String&gt;[] table = <span class="hljs-keyword">new</span> Pair&lt;String&gt;[<span class="hljs-number">10</span>];  <span class="hljs-comment">// Error</span><br></code></pre></td></tr></table></figure>
-
-<p>擦除之后，<code>table</code>的类型是<code>Pair[]</code>。可以把它转换为<code>Object[]</code>:<code>Object[] objarray = table;</code></p>
-<p>数组会记住它的元素类型，如果试图存储其他类型的元素，就会抛出一个<code>ArrayStoreException</code>异常：<code>objarray[0] = &quot;hello&quot;; // Error--component tye is Pair</code></p>
-<p>不过对于泛型类型， 擦除会使这种机制无效。</p>
-<p><code>objarray[0] = new Pair&lt;Employee&gt;()</code>能够通过数组存储检查，不过仍会导致一个类型错误。</p>
-<p>处于安全考虑呢，Java不允许创建参数化类型的数组。</p>
-</li>
-</ul>
-<h3 id="Java泛型与C-模板-差异之处"><a href="#Java泛型与C-模板-差异之处" class="headerlink" title="Java泛型与C++模板 差异之处"></a>Java泛型与C++模板 差异之处</h3><p>“泛型编程”这个概念最早就是来源于C++当初设计STL时所引入的模板（Template），而为什么要引入模板呢，因为STL要完成这样一个目标：设计一套通用的，不依赖类型的，高效的的算法（例如<code>std::sort</code>）和数据结构（例如<code>std::list</code>）。关于通用性，运行时多态（Polymorphism）可以做到（例如很多高级语言的继承（Inheritance）机制，接口（Interface）机制），但是C++作为一门相对底层的语言，对运行效率的要求是很严格的，而运行时多态会影响效率（例如成员函数只有在运行时才知道调用哪个），所以设计STL的人就创造了一种编译时多态技术，即模板。</p>
-<p>那什么又是编译时多态呢，简单点说就是让编译器帮我确定类型，我写程序时只要标记下这里我要用“某种类型”的对象，至于具体是什么类型我不关心，你编译器帮我确定，编译完成后在运行时绝对是类型确定的，这样就大大提高了运行效率，反之对编译就增加了很多工作，而且生成的目标代码也会大大增加。所以对C++来说，所谓“泛型（Generics）”，并不是说编译器不知道类型，而是针对程序员来说的，这也正是通用性的体现。<a href="https://www.zhihu.com/question/33304378/answer/9171918">1</a></p>
-<p>在 C++ 模板中，编译器使用提供的类型参数来扩充模板，因此，为 <code>List&lt;A&gt;</code> 生成的 C++ 代码不同于为 <code>List&lt;B&gt;</code> 生成的代码，<code>List&lt;A&gt;</code> 和 <code>List&lt;B&gt;</code> 实际上是两个不同的类。而 Java 中的泛型则以不同的方式实现，编译器仅仅对这些类型参数进行擦除和替换。类型 <code>ArrayList&lt;Integer&gt;</code> 和 <code>ArrayList&lt;String&gt;</code> 的对象共享相同的类，并且只存在一个 <code>ArrayList</code> 类。<a href="https://www.ibm.com/developerworks/cn/java/j-lo-gj/index.html">3</a></p>
-<h2 id="References"><a href="#References" class="headerlink" title="References:"></a>References:</h2><ol>
-<li>Java核心技术</li>
-<li><a href="https://www.zhihu.com/question/33304378/answer/9171918">知乎Vesion回答</a></li>
-<li><a href="https://codefine.site/1759.html">Java泛型：类型檫除、模板和泛型传递</a></li>
-<li><a href="https://www.ibm.com/developerworks/cn/java/j-lo-gj/index.html">Java 中的泛型与 C++ 模板的比较</a></li>
-</ol>
-]]></content>
-      <tags>
-        <tag>Java</tag>
-        <tag>Java Generics</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Java IO</title>
     <url>/2020/03/31/java_io/</url>
     <content><![CDATA[<h1 id="Java-I-O"><a href="#Java-I-O" class="headerlink" title="Java I/O"></a>Java I/O</h1><p>I/O流 概念： 流数据从一端传到另一端</p>
@@ -183,6 +149,40 @@
       <tags>
         <tag>Algorithm</tag>
         <tag>LeetCode</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Java泛型</title>
+    <url>/2020/03/04/java_generics/</url>
+    <content><![CDATA[<h3 id="Java泛型-类型擦除"><a href="#Java泛型-类型擦除" class="headerlink" title="Java泛型 类型擦除"></a>Java泛型 类型擦除</h3><p>正确理解泛型概念的首要前提是理解类型擦除（type erasure）。 Java中的泛型基本上都是在编译器这个层次来实现的。在生成的Java字节代码中是不包含泛型中的类型信息的。使用泛型的时候加上的类型参数，会被编译器在编译的时候去掉。这个过程就称为类型擦除。如在代码中定义的<code>List&lt;Object&gt;</code>和<code>List&lt;String&gt;</code>等类型，在编译之后都会变成List。JVM看到的只是<code>List</code>，而由泛型附加的类型信息对JVM来说是不可见的。Java编译器会在编译时尽可能的发现可能出错的地方，但是仍然无法避免在运行时刻出现类型转换异常的情况。<a href="https://codefine.site/1759.html">2</a></p>
+<h3 id="Java泛型特性"><a href="#Java泛型特性" class="headerlink" title="Java泛型特性"></a>Java泛型特性</h3><ul>
+<li><p>泛型类并没有自己独有的Class类对象。比如并不存在<code>List&lt;String&gt;.class</code>或是<code>List&lt;Integer&gt;.class</code>，而只有<code>List.class</code>。</p>
+</li>
+<li><p>静态变量是被泛型类的所有实例所共享的。对于声明为<code>MyClass&lt;T&gt;</code>的类，访问其中的静态变量的方法仍然是 <code>MyClass.myStaticVar</code>。不管是通过<code>new MyClass&lt;String&gt;</code>还是<code>new MyClass&lt;Integer&gt;</code>创建的对象，都是共享一个静态变量。</p>
+</li>
+<li><p>泛型的类型参数不能用在Java异常处理的<code>catch</code>语句中。因为异常处理是由JVM在运行时刻来进行的。由于类型信息被擦除，JVM是无法区分两个异常类型<code>MyException&lt;String&gt;</code>和<code>MyException&lt;Integer&gt;</code>的。对于JVM来说，它们都是<code> MyException</code>类型的。也就无法执行与异常对应的<code>catch</code>语句。</p>
+<h4 id="不允许创建参数化类型数组"><a href="#不允许创建参数化类型数组" class="headerlink" title="不允许创建参数化类型数组"></a>不允许创建参数化类型数组</h4><figure class="highlight java"><table><tr><td class="code"><pre><code class="hljs java">Pair&lt;String&gt;[] table = <span class="hljs-keyword">new</span> Pair&lt;String&gt;[<span class="hljs-number">10</span>];  <span class="hljs-comment">// Error</span><br></code></pre></td></tr></table></figure>
+
+<p>擦除之后，<code>table</code>的类型是<code>Pair[]</code>。可以把它转换为<code>Object[]</code>:<code>Object[] objarray = table;</code></p>
+<p>数组会记住它的元素类型，如果试图存储其他类型的元素，就会抛出一个<code>ArrayStoreException</code>异常：<code>objarray[0] = &quot;hello&quot;; // Error--component tye is Pair</code></p>
+<p>不过对于泛型类型， 擦除会使这种机制无效。</p>
+<p><code>objarray[0] = new Pair&lt;Employee&gt;()</code>能够通过数组存储检查，不过仍会导致一个类型错误。</p>
+<p>处于安全考虑呢，Java不允许创建参数化类型的数组。</p>
+</li>
+</ul>
+<h3 id="Java泛型与C-模板-差异之处"><a href="#Java泛型与C-模板-差异之处" class="headerlink" title="Java泛型与C++模板 差异之处"></a>Java泛型与C++模板 差异之处</h3><p>“泛型编程”这个概念最早就是来源于C++当初设计STL时所引入的模板（Template），而为什么要引入模板呢，因为STL要完成这样一个目标：设计一套通用的，不依赖类型的，高效的的算法（例如<code>std::sort</code>）和数据结构（例如<code>std::list</code>）。关于通用性，运行时多态（Polymorphism）可以做到（例如很多高级语言的继承（Inheritance）机制，接口（Interface）机制），但是C++作为一门相对底层的语言，对运行效率的要求是很严格的，而运行时多态会影响效率（例如成员函数只有在运行时才知道调用哪个），所以设计STL的人就创造了一种编译时多态技术，即模板。</p>
+<p>那什么又是编译时多态呢，简单点说就是让编译器帮我确定类型，我写程序时只要标记下这里我要用“某种类型”的对象，至于具体是什么类型我不关心，你编译器帮我确定，编译完成后在运行时绝对是类型确定的，这样就大大提高了运行效率，反之对编译就增加了很多工作，而且生成的目标代码也会大大增加。所以对C++来说，所谓“泛型（Generics）”，并不是说编译器不知道类型，而是针对程序员来说的，这也正是通用性的体现。<a href="https://www.zhihu.com/question/33304378/answer/9171918">1</a></p>
+<p>在 C++ 模板中，编译器使用提供的类型参数来扩充模板，因此，为 <code>List&lt;A&gt;</code> 生成的 C++ 代码不同于为 <code>List&lt;B&gt;</code> 生成的代码，<code>List&lt;A&gt;</code> 和 <code>List&lt;B&gt;</code> 实际上是两个不同的类。而 Java 中的泛型则以不同的方式实现，编译器仅仅对这些类型参数进行擦除和替换。类型 <code>ArrayList&lt;Integer&gt;</code> 和 <code>ArrayList&lt;String&gt;</code> 的对象共享相同的类，并且只存在一个 <code>ArrayList</code> 类。<a href="https://www.ibm.com/developerworks/cn/java/j-lo-gj/index.html">3</a></p>
+<h2 id="References"><a href="#References" class="headerlink" title="References:"></a>References:</h2><ol>
+<li>Java核心技术</li>
+<li><a href="https://www.zhihu.com/question/33304378/answer/9171918">知乎Vesion回答</a></li>
+<li><a href="https://codefine.site/1759.html">Java泛型：类型檫除、模板和泛型传递</a></li>
+<li><a href="https://www.ibm.com/developerworks/cn/java/j-lo-gj/index.html">Java 中的泛型与 C++ 模板的比较</a></li>
+</ol>
+]]></content>
+      <tags>
+        <tag>Java</tag>
+        <tag>Java Generics</tag>
       </tags>
   </entry>
   <entry>
