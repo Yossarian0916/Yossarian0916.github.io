@@ -53,13 +53,60 @@
 </ul>
 </li>
 <li><p>最后的最后，检查TensorFlow是否能使用GPU加速</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><code class="hljs python3">from tensorflow.python.client import device_lib<br>import tensorflow as tf<br><br><br># list the avilable devices in local processes<br>device_lib.list_local_devices()<br><br># matrix multiplying with GPU<br>a &#x3D; tf.constant([1.0, 2.0, 3.0, 4.0, 5.0, 6.0], shape&#x3D;[2, 3], name&#x3D;&#39;a&#39;)<br>b &#x3D; tf.constant([1.0, 2.0, 3.0, 4.0, 5.0, 6.0], shape&#x3D;[3, 2], name&#x3D;&#39;b&#39;)<br>c &#x3D; tf.matmul(a, b)<br><br>sess &#x3D; tf.Session(config&#x3D;tf.ConfigProto(log_device_placement&#x3D;True))<br>print(sess.run(c))<br></code></pre></td></tr></table></figure>
+<pre><code class="hljs python3">from tensorflow.python.client import device_lib
+import tensorflow as tf
+
+
+# list the avilable devices in local processes
+device_lib.list_local_devices()
+
+# matrix multiplying with GPU
+a &#x3D; tf.constant([1.0, 2.0, 3.0, 4.0, 5.0, 6.0], shape&#x3D;[2, 3], name&#x3D;&#39;a&#39;)
+b &#x3D; tf.constant([1.0, 2.0, 3.0, 4.0, 5.0, 6.0], shape&#x3D;[3, 2], name&#x3D;&#39;b&#39;)
+c &#x3D; tf.matmul(a, b)
+
+sess &#x3D; tf.Session(config&#x3D;tf.ConfigProto(log_device_placement&#x3D;True))
+print(sess.run(c))</code></pre>
 
 </li>
 </ol>
 ]]></content>
       <tags>
         <tag>tensorflow</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Java泛型</title>
+    <url>/2020/03/04/java_generics/</url>
+    <content><![CDATA[<h3 id="Java泛型-类型擦除"><a href="#Java泛型-类型擦除" class="headerlink" title="Java泛型 类型擦除"></a>Java泛型 类型擦除</h3><p>正确理解泛型概念的首要前提是理解类型擦除（type erasure）。 Java中的泛型基本上都是在编译器这个层次来实现的。在生成的Java字节代码中是不包含泛型中的类型信息的。使用泛型的时候加上的类型参数，会被编译器在编译的时候去掉。这个过程就称为类型擦除。如在代码中定义的<code>List&lt;Object&gt;</code>和<code>List&lt;String&gt;</code>等类型，在编译之后都会变成List。JVM看到的只是<code>List</code>，而由泛型附加的类型信息对JVM来说是不可见的。Java编译器会在编译时尽可能的发现可能出错的地方，但是仍然无法避免在运行时刻出现类型转换异常的情况。<a href="https://codefine.site/1759.html">2</a></p>
+<h3 id="Java泛型特性"><a href="#Java泛型特性" class="headerlink" title="Java泛型特性"></a>Java泛型特性</h3><ul>
+<li><p>泛型类并没有自己独有的Class类对象。比如并不存在<code>List&lt;String&gt;.class</code>或是<code>List&lt;Integer&gt;.class</code>，而只有<code>List.class</code>。</p>
+</li>
+<li><p>静态变量是被泛型类的所有实例所共享的。对于声明为<code>MyClass&lt;T&gt;</code>的类，访问其中的静态变量的方法仍然是 <code>MyClass.myStaticVar</code>。不管是通过<code>new MyClass&lt;String&gt;</code>还是<code>new MyClass&lt;Integer&gt;</code>创建的对象，都是共享一个静态变量。</p>
+</li>
+<li><p>泛型的类型参数不能用在Java异常处理的<code>catch</code>语句中。因为异常处理是由JVM在运行时刻来进行的。由于类型信息被擦除，JVM是无法区分两个异常类型<code>MyException&lt;String&gt;</code>和<code>MyException&lt;Integer&gt;</code>的。对于JVM来说，它们都是<code> MyException</code>类型的。也就无法执行与异常对应的<code>catch</code>语句。</p>
+<h4 id="不允许创建参数化类型数组"><a href="#不允许创建参数化类型数组" class="headerlink" title="不允许创建参数化类型数组"></a>不允许创建参数化类型数组</h4><pre><code class="hljs java">Pair&lt;String&gt;[] table = <span class="hljs-keyword">new</span> Pair&lt;String&gt;[<span class="hljs-number">10</span>];  <span class="hljs-comment">// Error</span></code></pre>
+
+<p>擦除之后，<code>table</code>的类型是<code>Pair[]</code>。可以把它转换为<code>Object[]</code>:<code>Object[] objarray = table;</code></p>
+<p>数组会记住它的元素类型，如果试图存储其他类型的元素，就会抛出一个<code>ArrayStoreException</code>异常：<code>objarray[0] = &quot;hello&quot;; // Error--component tye is Pair</code></p>
+<p>不过对于泛型类型， 擦除会使这种机制无效。</p>
+<p><code>objarray[0] = new Pair&lt;Employee&gt;()</code>能够通过数组存储检查，不过仍会导致一个类型错误。</p>
+<p>处于安全考虑呢，Java不允许创建参数化类型的数组。</p>
+</li>
+</ul>
+<h3 id="Java泛型与C-模板-差异之处"><a href="#Java泛型与C-模板-差异之处" class="headerlink" title="Java泛型与C++模板 差异之处"></a>Java泛型与C++模板 差异之处</h3><p>“泛型编程”这个概念最早就是来源于C++当初设计STL时所引入的模板（Template），而为什么要引入模板呢，因为STL要完成这样一个目标：设计一套通用的，不依赖类型的，高效的的算法（例如<code>std::sort</code>）和数据结构（例如<code>std::list</code>）。关于通用性，运行时多态（Polymorphism）可以做到（例如很多高级语言的继承（Inheritance）机制，接口（Interface）机制），但是C++作为一门相对底层的语言，对运行效率的要求是很严格的，而运行时多态会影响效率（例如成员函数只有在运行时才知道调用哪个），所以设计STL的人就创造了一种编译时多态技术，即模板。</p>
+<p>那什么又是编译时多态呢，简单点说就是让编译器帮我确定类型，我写程序时只要标记下这里我要用“某种类型”的对象，至于具体是什么类型我不关心，你编译器帮我确定，编译完成后在运行时绝对是类型确定的，这样就大大提高了运行效率，反之对编译就增加了很多工作，而且生成的目标代码也会大大增加。所以对C++来说，所谓“泛型（Generics）”，并不是说编译器不知道类型，而是针对程序员来说的，这也正是通用性的体现。<a href="https://www.zhihu.com/question/33304378/answer/9171918">1</a></p>
+<p>在 C++ 模板中，编译器使用提供的类型参数来扩充模板，因此，为 <code>List&lt;A&gt;</code> 生成的 C++ 代码不同于为 <code>List&lt;B&gt;</code> 生成的代码，<code>List&lt;A&gt;</code> 和 <code>List&lt;B&gt;</code> 实际上是两个不同的类。而 Java 中的泛型则以不同的方式实现，编译器仅仅对这些类型参数进行擦除和替换。类型 <code>ArrayList&lt;Integer&gt;</code> 和 <code>ArrayList&lt;String&gt;</code> 的对象共享相同的类，并且只存在一个 <code>ArrayList</code> 类。<a href="https://www.ibm.com/developerworks/cn/java/j-lo-gj/index.html">3</a></p>
+<h2 id="References"><a href="#References" class="headerlink" title="References:"></a>References:</h2><ol>
+<li>Java核心技术</li>
+<li><a href="https://www.zhihu.com/question/33304378/answer/9171918">知乎Vesion回答</a></li>
+<li><a href="https://codefine.site/1759.html">Java泛型：类型檫除、模板和泛型传递</a></li>
+<li><a href="https://www.ibm.com/developerworks/cn/java/j-lo-gj/index.html">Java 中的泛型与 C++ 模板的比较</a></li>
+</ol>
+]]></content>
+      <tags>
+        <tag>Java</tag>
+        <tag>Java Generics</tag>
       </tags>
   </entry>
   <entry>
@@ -105,7 +152,45 @@
 </blockquote>
 <h2 id="解法1-circular-linked-list"><a href="#解法1-circular-linked-list" class="headerlink" title="解法1: circular linked list"></a>解法1: circular linked list</h2><p>循环链表解法很直接，复杂度O(n)</p>
 <p>每个Node就是问题中的一个人，数到谁就删除相应的Node，最后只剩一个Node</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Node</span> </span>&#123;<br>    <span class="hljs-keyword">int</span> data;<br>    Node next;<br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Node</span><span class="hljs-params">(<span class="hljs-keyword">int</span> data)</span></span>&#123;<br>        <span class="hljs-keyword">this</span>.data = data;<br>    &#125;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">public</span> Node <span class="hljs-title">createCirLinkedList</span><span class="hljs-params">(<span class="hljs-keyword">int</span> N)</span> </span>&#123;<br>     Node head = <span class="hljs-keyword">new</span> Node(<span class="hljs-number">1</span>);<br>     Node next = head;<br>     <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">2</span>; i &lt;= N; i++)&#123;<br>         Node tmp = <span class="hljs-keyword">new</span> Node(i);<br>         next.next = tmp;<br>         next = next.next;<br>      &#125;<br>      next.next = head;<br>      <span class="hljs-keyword">return</span> head;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">solve</span><span class="hljs-params">(<span class="hljs-keyword">int</span> N, <span class="hljs-keyword">int</span> m)</span> </span>&#123;<br>     <span class="hljs-comment">// create circurlar linked list</span><br>     Node head = createCirLinkedList(N);<br>     <span class="hljs-comment">// remove node recursively </span><br>     <span class="hljs-keyword">while</span> (head != head.next)&#123;<br>         <span class="hljs-comment">// move head point to the previous node before to-be-deleted node</span><br>         <span class="hljs-comment">// head.next is the node to be deleted</span><br>         <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">1</span>; i &lt; m - <span class="hljs-number">1</span>; i++)&#123;<br>             head = head.next;<br>         &#125;<br>         System.out.print(head.next.data+<span class="hljs-string">&quot;-&gt;&quot;</span>);<br>         <span class="hljs-comment">// remove the m-th node</span><br>         head.next = head.next.next;<br>         head = head.next;<br>         &#125;<br>         System.out.print(<span class="hljs-string">&quot;Done!\n&quot;</span>);<br>         <span class="hljs-keyword">return</span> head.data;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+<pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Node</span> </span>&#123;
+    <span class="hljs-keyword">int</span> data;
+    Node next;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Node</span><span class="hljs-params">(<span class="hljs-keyword">int</span> data)</span></span>&#123;
+        <span class="hljs-keyword">this</span>.data = data;
+    &#125;
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> Node <span class="hljs-title">createCirLinkedList</span><span class="hljs-params">(<span class="hljs-keyword">int</span> N)</span> </span>&#123;
+     Node head = <span class="hljs-keyword">new</span> Node(<span class="hljs-number">1</span>);
+     Node next = head;
+     <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">2</span>; i &lt;= N; i++)&#123;
+         Node tmp = <span class="hljs-keyword">new</span> Node(i);
+         next.next = tmp;
+         next = next.next;
+      &#125;
+      next.next = head;
+      <span class="hljs-keyword">return</span> head;
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">solve</span><span class="hljs-params">(<span class="hljs-keyword">int</span> N, <span class="hljs-keyword">int</span> m)</span> </span>&#123;
+     <span class="hljs-comment">// create circurlar linked list</span>
+     Node head = createCirLinkedList(N);
+     <span class="hljs-comment">// remove node recursively </span>
+     <span class="hljs-keyword">while</span> (head != head.next)&#123;
+         <span class="hljs-comment">// move head point to the previous node before to-be-deleted node</span>
+         <span class="hljs-comment">// head.next is the node to be deleted</span>
+         <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">1</span>; i &lt; m - <span class="hljs-number">1</span>; i++)&#123;
+             head = head.next;
+         &#125;
+         System.out.print(head.next.data+<span class="hljs-string">&quot;-&gt;&quot;</span>);
+         <span class="hljs-comment">// remove the m-th node</span>
+         head.next = head.next.next;
+         head = head.next;
+         &#125;
+         System.out.print(<span class="hljs-string">&quot;Done!\n&quot;</span>);
+         <span class="hljs-keyword">return</span> head.data;
+&#125;
+</code></pre>
 
 
 
@@ -132,12 +217,34 @@
 
              k-1 --&gt; n-1</code></pre>
 <p>n个人玩J(n)时的序号转换成n-1个人玩J(n-1)的序号，这样之，当我们知道子问题J(n-1）的胜利者编号就可以转换成J(n)时的编号，J(1)-&gt;J(2)-&gt;…-&gt;J(n-1)-&gt;J(n), 递推公式就来了</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><code class="hljs plain">   J(n) &#x3D; (J(n-1) + k) % n, k &#x3D; m % n<br>&#x3D;&gt; J(n) &#x3D; (J(n-1) + m % n) % n<br>        &#x3D; (J(n-1) + m) % n<br></code></pre></td></tr></table></figure>
+<pre><code class="hljs plain">   J(n) &#x3D; (J(n-1) + k) % n, k &#x3D; m % n
+&#x3D;&gt; J(n) &#x3D; (J(n-1) + m % n) % n
+        &#x3D; (J(n-1) + m) % n</code></pre>
 
 <p>递推公式:<br>J(1) = 0<br>J(n) = (J(n-1) + m) % n</p>
-<h3 id="recursive"><a href="#recursive" class="headerlink" title="recursive:"></a>recursive:</h3><figure class="highlight java"><table><tr><td class="code"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">solve</span><span class="hljs-params">(<span class="hljs-keyword">int</span> N, <span class="hljs-keyword">int</span> m)</span> </span>&#123;<br>     <span class="hljs-comment">/* index begin at 0 */</span><br>     <span class="hljs-keyword">if</span> (N == <span class="hljs-number">1</span>) &#123;<br>         <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>     &#125;<br>     <span class="hljs-keyword">return</span> (recursiveSolve(N - <span class="hljs-number">1</span>, m) + m) % N;<br>&#125;<br><br><span class="hljs-comment">// when index begins at 1</span><br><span class="hljs-keyword">int</span> res = solve(N, m) + <span class="hljs-number">1</span>;<br><br></code></pre></td></tr></table></figure>
+<h3 id="recursive"><a href="#recursive" class="headerlink" title="recursive:"></a>recursive:</h3><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">solve</span><span class="hljs-params">(<span class="hljs-keyword">int</span> N, <span class="hljs-keyword">int</span> m)</span> </span>&#123;
+     <span class="hljs-comment">/* index begin at 0 */</span>
+     <span class="hljs-keyword">if</span> (N == <span class="hljs-number">1</span>) &#123;
+         <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+     &#125;
+     <span class="hljs-keyword">return</span> (recursiveSolve(N - <span class="hljs-number">1</span>, m) + m) % N;
+&#125;
 
-<h3 id="iterative"><a href="#iterative" class="headerlink" title="iterative:"></a>iterative:</h3><figure class="highlight java"><table><tr><td class="code"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">solve</span><span class="hljs-params">(<span class="hljs-keyword">int</span> N, <span class="hljs-keyword">int</span> m)</span> </span>&#123;<br>     <span class="hljs-comment">/* index begin at 0 */</span><br>     <span class="hljs-keyword">int</span> res = <span class="hljs-number">0</span>;<br>     <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">2</span>; i &lt;= N; i++)&#123;<br>         res = (res + m) % i;<br>     &#125;<br>     <span class="hljs-comment">// when index begin at 1</span><br>     res = res + <span class="hljs-number">1</span>;<br>     <span class="hljs-keyword">return</span> res;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+<span class="hljs-comment">// when index begins at 1</span>
+<span class="hljs-keyword">int</span> res = solve(N, m) + <span class="hljs-number">1</span>;
+</code></pre>
+
+<h3 id="iterative"><a href="#iterative" class="headerlink" title="iterative:"></a>iterative:</h3><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">solve</span><span class="hljs-params">(<span class="hljs-keyword">int</span> N, <span class="hljs-keyword">int</span> m)</span> </span>&#123;
+     <span class="hljs-comment">/* index begin at 0 */</span>
+     <span class="hljs-keyword">int</span> res = <span class="hljs-number">0</span>;
+     <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">2</span>; i &lt;= N; i++)&#123;
+         res = (res + m) % i;
+     &#125;
+     <span class="hljs-comment">// when index begin at 1</span>
+     res = res + <span class="hljs-number">1</span>;
+     <span class="hljs-keyword">return</span> res;
+&#125;
+</code></pre>
 
 
 
@@ -149,40 +256,6 @@
       <tags>
         <tag>Algorithm</tag>
         <tag>LeetCode</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Java泛型</title>
-    <url>/2020/03/04/java_generics/</url>
-    <content><![CDATA[<h3 id="Java泛型-类型擦除"><a href="#Java泛型-类型擦除" class="headerlink" title="Java泛型 类型擦除"></a>Java泛型 类型擦除</h3><p>正确理解泛型概念的首要前提是理解类型擦除（type erasure）。 Java中的泛型基本上都是在编译器这个层次来实现的。在生成的Java字节代码中是不包含泛型中的类型信息的。使用泛型的时候加上的类型参数，会被编译器在编译的时候去掉。这个过程就称为类型擦除。如在代码中定义的<code>List&lt;Object&gt;</code>和<code>List&lt;String&gt;</code>等类型，在编译之后都会变成List。JVM看到的只是<code>List</code>，而由泛型附加的类型信息对JVM来说是不可见的。Java编译器会在编译时尽可能的发现可能出错的地方，但是仍然无法避免在运行时刻出现类型转换异常的情况。<a href="https://codefine.site/1759.html">2</a></p>
-<h3 id="Java泛型特性"><a href="#Java泛型特性" class="headerlink" title="Java泛型特性"></a>Java泛型特性</h3><ul>
-<li><p>泛型类并没有自己独有的Class类对象。比如并不存在<code>List&lt;String&gt;.class</code>或是<code>List&lt;Integer&gt;.class</code>，而只有<code>List.class</code>。</p>
-</li>
-<li><p>静态变量是被泛型类的所有实例所共享的。对于声明为<code>MyClass&lt;T&gt;</code>的类，访问其中的静态变量的方法仍然是 <code>MyClass.myStaticVar</code>。不管是通过<code>new MyClass&lt;String&gt;</code>还是<code>new MyClass&lt;Integer&gt;</code>创建的对象，都是共享一个静态变量。</p>
-</li>
-<li><p>泛型的类型参数不能用在Java异常处理的<code>catch</code>语句中。因为异常处理是由JVM在运行时刻来进行的。由于类型信息被擦除，JVM是无法区分两个异常类型<code>MyException&lt;String&gt;</code>和<code>MyException&lt;Integer&gt;</code>的。对于JVM来说，它们都是<code> MyException</code>类型的。也就无法执行与异常对应的<code>catch</code>语句。</p>
-<h4 id="不允许创建参数化类型数组"><a href="#不允许创建参数化类型数组" class="headerlink" title="不允许创建参数化类型数组"></a>不允许创建参数化类型数组</h4><figure class="highlight java"><table><tr><td class="code"><pre><code class="hljs java">Pair&lt;String&gt;[] table = <span class="hljs-keyword">new</span> Pair&lt;String&gt;[<span class="hljs-number">10</span>];  <span class="hljs-comment">// Error</span><br></code></pre></td></tr></table></figure>
-
-<p>擦除之后，<code>table</code>的类型是<code>Pair[]</code>。可以把它转换为<code>Object[]</code>:<code>Object[] objarray = table;</code></p>
-<p>数组会记住它的元素类型，如果试图存储其他类型的元素，就会抛出一个<code>ArrayStoreException</code>异常：<code>objarray[0] = &quot;hello&quot;; // Error--component tye is Pair</code></p>
-<p>不过对于泛型类型， 擦除会使这种机制无效。</p>
-<p><code>objarray[0] = new Pair&lt;Employee&gt;()</code>能够通过数组存储检查，不过仍会导致一个类型错误。</p>
-<p>处于安全考虑呢，Java不允许创建参数化类型的数组。</p>
-</li>
-</ul>
-<h3 id="Java泛型与C-模板-差异之处"><a href="#Java泛型与C-模板-差异之处" class="headerlink" title="Java泛型与C++模板 差异之处"></a>Java泛型与C++模板 差异之处</h3><p>“泛型编程”这个概念最早就是来源于C++当初设计STL时所引入的模板（Template），而为什么要引入模板呢，因为STL要完成这样一个目标：设计一套通用的，不依赖类型的，高效的的算法（例如<code>std::sort</code>）和数据结构（例如<code>std::list</code>）。关于通用性，运行时多态（Polymorphism）可以做到（例如很多高级语言的继承（Inheritance）机制，接口（Interface）机制），但是C++作为一门相对底层的语言，对运行效率的要求是很严格的，而运行时多态会影响效率（例如成员函数只有在运行时才知道调用哪个），所以设计STL的人就创造了一种编译时多态技术，即模板。</p>
-<p>那什么又是编译时多态呢，简单点说就是让编译器帮我确定类型，我写程序时只要标记下这里我要用“某种类型”的对象，至于具体是什么类型我不关心，你编译器帮我确定，编译完成后在运行时绝对是类型确定的，这样就大大提高了运行效率，反之对编译就增加了很多工作，而且生成的目标代码也会大大增加。所以对C++来说，所谓“泛型（Generics）”，并不是说编译器不知道类型，而是针对程序员来说的，这也正是通用性的体现。<a href="https://www.zhihu.com/question/33304378/answer/9171918">1</a></p>
-<p>在 C++ 模板中，编译器使用提供的类型参数来扩充模板，因此，为 <code>List&lt;A&gt;</code> 生成的 C++ 代码不同于为 <code>List&lt;B&gt;</code> 生成的代码，<code>List&lt;A&gt;</code> 和 <code>List&lt;B&gt;</code> 实际上是两个不同的类。而 Java 中的泛型则以不同的方式实现，编译器仅仅对这些类型参数进行擦除和替换。类型 <code>ArrayList&lt;Integer&gt;</code> 和 <code>ArrayList&lt;String&gt;</code> 的对象共享相同的类，并且只存在一个 <code>ArrayList</code> 类。<a href="https://www.ibm.com/developerworks/cn/java/j-lo-gj/index.html">3</a></p>
-<h2 id="References"><a href="#References" class="headerlink" title="References:"></a>References:</h2><ol>
-<li>Java核心技术</li>
-<li><a href="https://www.zhihu.com/question/33304378/answer/9171918">知乎Vesion回答</a></li>
-<li><a href="https://codefine.site/1759.html">Java泛型：类型檫除、模板和泛型传递</a></li>
-<li><a href="https://www.ibm.com/developerworks/cn/java/j-lo-gj/index.html">Java 中的泛型与 C++ 模板的比较</a></li>
-</ol>
-]]></content>
-      <tags>
-        <tag>Java</tag>
-        <tag>Java Generics</tag>
       </tags>
   </entry>
   <entry>
@@ -297,9 +370,57 @@
 <pre><code> ![socket通信](../images/socket通信过程.png)</code></pre>
 <ol start="3">
 <li><p>客户端/服务器socket通信简单例子</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><code class="hljs python3">#!&#x2F;usr&#x2F;bin&#x2F;env python3<br>   # 客户端<br>import socket<br>   <br><br>   # create socket descriptor<br>client &#x3D; socket.socket(socket.AF_INET, socket.SOCK_STREAM)<br>   # connect with local loopback address<br>client.connect((&#39;127.0.0.1&#39;, 9999))<br>   <br>   # receive message from server, and send message from console input<br>   # close the socket until input &#39;exit&#39;<br>   while True:<br>   	data &#x3D; client.recv(1024)<br>   	print(data.decode(&#39;utf-8&#39;))<br>   	<br>   	msg &#x3D; input(&#39;&gt;&gt;&gt; &#39;)<br>   	client.send(msg.encode(&#39;utf-8&#39;))<br>   	if msg &#x3D;&#x3D; &#39;exit&#39;:<br>   		break<br>   client.close()<br></code></pre></td></tr></table></figure>
+<pre><code class="hljs python3">#!&#x2F;usr&#x2F;bin&#x2F;env python3
+   # 客户端
+import socket
+   
 
-<figure class="highlight plain"><table><tr><td class="code"><pre><code class="hljs python3">#!&#x2F;usr&#x2F;bin&#x2F;env python3<br># 服务器端<br>import socket<br>import time<br>import random<br><br><br>s &#x3D; socket.socket(socket.AF_INET, socket.SOCK_STREAM)<br>s.bind((&#39;127.0.0.1&#39;, 9999))<br>s.listen(5)  # backlog number<br>print(&#39;Waiting for connection...&#39;)<br><br># accept connection from client<br># receive message from client and send a random integer back <br># until receive &#39;exit&#39;, close the connection and wait for next one<br>while True:<br>    conn, addr &#x3D; s.accept()<br>    conn.send(b&#39;Welcome&#39;)<br>    print(&#39;Connected with %s:%s&#39; % addr)<br>    while True:<br>        data &#x3D; conn.recv(1024)<br>        time.sleep(1)  # simple way to unpack block<br>        if not data or data.encode(&#39;utf-8&#39;) &#x3D;&#x3D; &#39;exit&#39;:<br>            break<br>        else:<br>            msg &#x3D; random.randint(1, 100)<br>            conn.send(str(msg).encode(&#39;utf-8&#39;))<br>    conn.close()<br>    print(&#39;Connection from %s:%s closed\n&#39; % addr)<br></code></pre></td></tr></table></figure>
+   # create socket descriptor
+client &#x3D; socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+   # connect with local loopback address
+client.connect((&#39;127.0.0.1&#39;, 9999))
+   
+   # receive message from server, and send message from console input
+   # close the socket until input &#39;exit&#39;
+   while True:
+   	data &#x3D; client.recv(1024)
+   	print(data.decode(&#39;utf-8&#39;))
+   	
+   	msg &#x3D; input(&#39;&gt;&gt;&gt; &#39;)
+   	client.send(msg.encode(&#39;utf-8&#39;))
+   	if msg &#x3D;&#x3D; &#39;exit&#39;:
+   		break
+   client.close()</code></pre>
+
+<pre><code class="hljs python3">#!&#x2F;usr&#x2F;bin&#x2F;env python3
+# 服务器端
+import socket
+import time
+import random
+
+
+s &#x3D; socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind((&#39;127.0.0.1&#39;, 9999))
+s.listen(5)  # backlog number
+print(&#39;Waiting for connection...&#39;)
+
+# accept connection from client
+# receive message from client and send a random integer back 
+# until receive &#39;exit&#39;, close the connection and wait for next one
+while True:
+    conn, addr &#x3D; s.accept()
+    conn.send(b&#39;Welcome&#39;)
+    print(&#39;Connected with %s:%s&#39; % addr)
+    while True:
+        data &#x3D; conn.recv(1024)
+        time.sleep(1)  # simple way to unpack block
+        if not data or data.encode(&#39;utf-8&#39;) &#x3D;&#x3D; &#39;exit&#39;:
+            break
+        else:
+            msg &#x3D; random.randint(1, 100)
+            conn.send(str(msg).encode(&#39;utf-8&#39;))
+    conn.close()
+    print(&#39;Connection from %s:%s closed\n&#39; % addr)</code></pre>
 
 
 

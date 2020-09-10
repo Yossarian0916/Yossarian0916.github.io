@@ -15,7 +15,7 @@
   </title>
   <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
   <link href="//cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" rel="stylesheet">
-  <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow.min.css" rel="stylesheet">
+  <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css" rel="stylesheet">
   
 <link rel="stylesheet" href="/css/style.css">
 
@@ -180,9 +180,57 @@
 <pre><code> ![socket通信](../images/socket通信过程.png)</code></pre>
 <ol start="3">
 <li><p>客户端/服务器socket通信简单例子</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><code class="hljs python3">#!&#x2F;usr&#x2F;bin&#x2F;env python3<br>   # 客户端<br>import socket<br>   <br><br>   # create socket descriptor<br>client &#x3D; socket.socket(socket.AF_INET, socket.SOCK_STREAM)<br>   # connect with local loopback address<br>client.connect((&#39;127.0.0.1&#39;, 9999))<br>   <br>   # receive message from server, and send message from console input<br>   # close the socket until input &#39;exit&#39;<br>   while True:<br>   	data &#x3D; client.recv(1024)<br>   	print(data.decode(&#39;utf-8&#39;))<br>   	<br>   	msg &#x3D; input(&#39;&gt;&gt;&gt; &#39;)<br>   	client.send(msg.encode(&#39;utf-8&#39;))<br>   	if msg &#x3D;&#x3D; &#39;exit&#39;:<br>   		break<br>   client.close()<br></code></pre></td></tr></table></figure>
+<pre><code class="hljs python3">#!&#x2F;usr&#x2F;bin&#x2F;env python3
+   # 客户端
+import socket
+   
 
-<figure class="highlight plain"><table><tr><td class="code"><pre><code class="hljs python3">#!&#x2F;usr&#x2F;bin&#x2F;env python3<br># 服务器端<br>import socket<br>import time<br>import random<br><br><br>s &#x3D; socket.socket(socket.AF_INET, socket.SOCK_STREAM)<br>s.bind((&#39;127.0.0.1&#39;, 9999))<br>s.listen(5)  # backlog number<br>print(&#39;Waiting for connection...&#39;)<br><br># accept connection from client<br># receive message from client and send a random integer back <br># until receive &#39;exit&#39;, close the connection and wait for next one<br>while True:<br>    conn, addr &#x3D; s.accept()<br>    conn.send(b&#39;Welcome&#39;)<br>    print(&#39;Connected with %s:%s&#39; % addr)<br>    while True:<br>        data &#x3D; conn.recv(1024)<br>        time.sleep(1)  # simple way to unpack block<br>        if not data or data.encode(&#39;utf-8&#39;) &#x3D;&#x3D; &#39;exit&#39;:<br>            break<br>        else:<br>            msg &#x3D; random.randint(1, 100)<br>            conn.send(str(msg).encode(&#39;utf-8&#39;))<br>    conn.close()<br>    print(&#39;Connection from %s:%s closed\n&#39; % addr)<br></code></pre></td></tr></table></figure>
+   # create socket descriptor
+client &#x3D; socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+   # connect with local loopback address
+client.connect((&#39;127.0.0.1&#39;, 9999))
+   
+   # receive message from server, and send message from console input
+   # close the socket until input &#39;exit&#39;
+   while True:
+   	data &#x3D; client.recv(1024)
+   	print(data.decode(&#39;utf-8&#39;))
+   	
+   	msg &#x3D; input(&#39;&gt;&gt;&gt; &#39;)
+   	client.send(msg.encode(&#39;utf-8&#39;))
+   	if msg &#x3D;&#x3D; &#39;exit&#39;:
+   		break
+   client.close()</code></pre>
+
+<pre><code class="hljs python3">#!&#x2F;usr&#x2F;bin&#x2F;env python3
+# 服务器端
+import socket
+import time
+import random
+
+
+s &#x3D; socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind((&#39;127.0.0.1&#39;, 9999))
+s.listen(5)  # backlog number
+print(&#39;Waiting for connection...&#39;)
+
+# accept connection from client
+# receive message from client and send a random integer back 
+# until receive &#39;exit&#39;, close the connection and wait for next one
+while True:
+    conn, addr &#x3D; s.accept()
+    conn.send(b&#39;Welcome&#39;)
+    print(&#39;Connected with %s:%s&#39; % addr)
+    while True:
+        data &#x3D; conn.recv(1024)
+        time.sleep(1)  # simple way to unpack block
+        if not data or data.encode(&#39;utf-8&#39;) &#x3D;&#x3D; &#39;exit&#39;:
+            break
+        else:
+            msg &#x3D; random.randint(1, 100)
+            conn.send(str(msg).encode(&#39;utf-8&#39;))
+    conn.close()
+    print(&#39;Connection from %s:%s closed\n&#39; % addr)</code></pre>
 
 
 
