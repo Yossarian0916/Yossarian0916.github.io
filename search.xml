@@ -63,39 +63,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Java IO</title>
-    <url>/2020/03/31/java_io/</url>
-    <content><![CDATA[<h1 id="Java-I-O"><a href="#Java-I-O" class="headerlink" title="Java I/O"></a>Java I/O</h1><p>I/O流 概念： 流数据从一端传到另一端</p>
-<p>Java I/O流分为三大类：</p>
-<ul>
-<li>按照读写单元（bit or byte）：字节流，字符流</li>
-<li>按照流的方向：输入流，输出流</li>
-<li>按照功能分：节点流，处理流</li>
-</ul>
-<p>字节流和字符流：</p>
-<ul>
-<li>当我们读取文件然后再写入其他文件时，不用过多的关注读取的内容时，通常使用的是字节流，因为这相当于是在处理二进制文件。读取数据效率高，并且保持数据的完整性；当我们读取文件的内容，并对文件的内容进行加工时，通常使用字符流。</li>
-</ul>
-<p>节点流和处理流：</p>
-<ul>
-<li>节点流：即从特定的数据源读取写入数据</li>
-<li>处理流：在已经存在的节点流或者处理流上，进行装饰提供更强大的读写功能<ol>
-<li>缓冲流（Buffered）带缓冲区，在节点流上添加缓冲区（例如：<code>new BufferedInputStream(new FileInputStream())</code>），这样避免读取文件时，大量进行硬盘的读写，提高读写效率</li>
-<li>转换流（StreamReader）即字节流和字符流的相互转换，比如：在进行读写字节流时，想调用读取字符流的函数，就可以通过转换流。<code>InputStreamReader in = new InputStreamReader(new InputStream())</code> <strong>注意只能字节流=&gt;字符流</strong></li>
-<li>数据流（Data）当读取写入具体的数值数据时，<code>DataInputStream</code>可以让你从<code>InputStream</code>读取Java基本类型来代替原始字节。如果读取的数据是由大于一个字节的Java基本类型构成，如int，long，float，double等，那么用<code>DataInputStream</code>是很方便的。读取的时候记住先读先写的原则，顺序不能乱，因为Java基本类型都是大于一个字节的，顺序不对，读取出来会出现乱码。所以在用<code>DataInputStream</code>的时候要么为文件中的数据采用固定格式，要么将额外信息保存到文件中，以便解析的时候确定数据位置和类型使用。</li>
-</ol>
-</li>
-</ul>
-<h3 id="Java-IO类结构"><a href="#Java-IO类结构" class="headerlink" title="Java IO类结构"></a>Java IO类结构</h3><p><strong><code>InputStream, OutputSteam, Reader, Writer</code>都是抽象类</strong></p>
-<p>贴张图：</p>
-<p><img src="/../images/java_IO.jpeg"></p>
-<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><p><a href="https://blog.csdn.net/qq_16558621/article/details/51377887">Java流机制详解</a><br><a href="https://blog.csdn.net/zhaoyanjun6/article/details/54292148">Java IO流学习总结一：输入输出流</a></p>
-]]></content>
-      <tags>
-        <tag>Java</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Java泛型</title>
     <url>/2020/03/04/java_generics/</url>
     <content><![CDATA[<h3 id="Java泛型-类型擦除"><a href="#Java泛型-类型擦除" class="headerlink" title="Java泛型 类型擦除"></a>Java泛型 类型擦除</h3><p>正确理解泛型概念的首要前提是理解类型擦除（type erasure）。 Java中的泛型基本上都是在编译器这个层次来实现的。在生成的Java字节代码中是不包含泛型中的类型信息的。使用泛型的时候加上的类型参数，会被编译器在编译的时候去掉。这个过程就称为类型擦除。如在代码中定义的<code>List&lt;Object&gt;</code>和<code>List&lt;String&gt;</code>等类型，在编译之后都会变成List。JVM看到的只是<code>List</code>，而由泛型附加的类型信息对JVM来说是不可见的。Java编译器会在编译时尽可能的发现可能出错的地方，但是仍然无法避免在运行时刻出现类型转换异常的情况。<a href="https://codefine.site/1759.html">2</a></p>
@@ -127,6 +94,39 @@
       <tags>
         <tag>Java</tag>
         <tag>Java Generics</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Java IO</title>
+    <url>/2020/03/31/java_io/</url>
+    <content><![CDATA[<h1 id="Java-I-O"><a href="#Java-I-O" class="headerlink" title="Java I/O"></a>Java I/O</h1><p>I/O流 概念： 流数据从一端传到另一端</p>
+<p>Java I/O流分为三大类：</p>
+<ul>
+<li>按照读写单元（bit or byte）：字节流，字符流</li>
+<li>按照流的方向：输入流，输出流</li>
+<li>按照功能分：节点流，处理流</li>
+</ul>
+<p>字节流和字符流：</p>
+<ul>
+<li>当我们读取文件然后再写入其他文件时，不用过多的关注读取的内容时，通常使用的是字节流，因为这相当于是在处理二进制文件。读取数据效率高，并且保持数据的完整性；当我们读取文件的内容，并对文件的内容进行加工时，通常使用字符流。</li>
+</ul>
+<p>节点流和处理流：</p>
+<ul>
+<li>节点流：即从特定的数据源读取写入数据</li>
+<li>处理流：在已经存在的节点流或者处理流上，进行装饰提供更强大的读写功能<ol>
+<li>缓冲流（Buffered）带缓冲区，在节点流上添加缓冲区（例如：<code>new BufferedInputStream(new FileInputStream())</code>），这样避免读取文件时，大量进行硬盘的读写，提高读写效率</li>
+<li>转换流（StreamReader）即字节流和字符流的相互转换，比如：在进行读写字节流时，想调用读取字符流的函数，就可以通过转换流。<code>InputStreamReader in = new InputStreamReader(new InputStream())</code> <strong>注意只能字节流=&gt;字符流</strong></li>
+<li>数据流（Data）当读取写入具体的数值数据时，<code>DataInputStream</code>可以让你从<code>InputStream</code>读取Java基本类型来代替原始字节。如果读取的数据是由大于一个字节的Java基本类型构成，如int，long，float，double等，那么用<code>DataInputStream</code>是很方便的。读取的时候记住先读先写的原则，顺序不能乱，因为Java基本类型都是大于一个字节的，顺序不对，读取出来会出现乱码。所以在用<code>DataInputStream</code>的时候要么为文件中的数据采用固定格式，要么将额外信息保存到文件中，以便解析的时候确定数据位置和类型使用。</li>
+</ol>
+</li>
+</ul>
+<h3 id="Java-IO类结构"><a href="#Java-IO类结构" class="headerlink" title="Java IO类结构"></a>Java IO类结构</h3><p><strong><code>InputStream, OutputSteam, Reader, Writer</code>都是抽象类</strong></p>
+<p>贴张图：</p>
+<p><img src="/../images/java_IO.jpeg"></p>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><p><a href="https://blog.csdn.net/qq_16558621/article/details/51377887">Java流机制详解</a><br><a href="https://blog.csdn.net/zhaoyanjun6/article/details/54292148">Java IO流学习总结一：输入输出流</a></p>
+]]></content>
+      <tags>
+        <tag>Java</tag>
       </tags>
   </entry>
   <entry>
@@ -207,6 +207,67 @@
 </li>
 </ol>
 <h1 id="References"><a href="#References" class="headerlink" title="References:"></a>References:</h1><p>Linux内核设计与实现（第三版）<br><a href="https://www.cnblogs.com/Anker/p/3269106.html">用户空间与内核空间，进程上下文与中断上下文</a></p>
+]]></content>
+      <tags>
+        <tag>Linux</tag>
+        <tag>操作系统</tag>
+        <tag>OS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Linux系统结构</title>
+    <url>/2019/11/09/linux_structure/</url>
+    <content><![CDATA[<h1 id="Linux系统结构"><a href="#Linux系统结构" class="headerlink" title="Linux系统结构"></a>Linux系统结构</h1><p>Linux系统有4个主要部分：内核，shell，文件系统和应用程序。内核，shell和文件系统一起形成了基本的操作系统，它们使用户可以运行程序、管理文件并使用系统。</p>
+<p><img src="/../images/linux_structure.png" alt="linux structure"></p>
+<hr>
+<ol>
+<li><p>Linux内核</p>
+<p>内核是操作系统的核心，负责管理系统的进程、内存、设备驱动程序、文件和网络系统。</p>
+<p><img src="/../images/linux_kernel.jpg" alt="linux_kernel"></p>
+<p>**系统调用接口: **SCI层提供了某些机制执行从用户空间到内核的函数调用。SCI实际上是一个非常有用的函数调用多路复用和多路分解服务。</p>
+<ul>
+<li><p>内存管理</p>
+<p>Linux采用了虚拟内存的内存管理方式。Linux将内存划分为容易处理的“内存页”（对于大部分体系结构来说都是4KB）。Linux包括了管理内存的方式，以及物理和虚拟映射所使用的硬件机制。</p>
+<p>不过内存管理要管理的可不止4KB缓冲区。Linux提供了对4KB缓冲区的抽象。这种内存管理模式使用4KB缓冲区为基数，然后从中分配结构，并跟踪内存页使用情况，比如哪些内存页是满的，哪些页面没有完全使用，哪些页面为空。这样就允许该模式根据系统需要来动态调整内存使用。</p>
+<p>为了支持多个用户使用内存，有时会出现可用内存被消耗光的情况。因此，页面可以一处内存并放入磁盘中。这个过程称为交换，因为页面会从内存交换到硬盘上。</p>
+</li>
+<li><p>进程管理</p>
+<p>进程实际是某个特定应用程序的一个运行实体。在Linux系统中，能够同时运行多个进程，Linux通过在短时间间隔内轮流运行这些进程而实现“多任务”。这一短时间间隔称为“时间片”，让进程轮流运行的方法称为“进程调度”。</p>
+<p>进程调度控制进程对CPU的访问。当需要选择下一个进程运行时，由调度程序选择最值得运行的进程。可运行进程实际上是仅等待CPU资源的进程，如果某个进程在等待其他资源，着该进程是不可运行进程。Linux使用了比较简单的基于优先级的进程调度算法选择新的进程。</p>
+<p>通过多任务机制，每个进程可认为只有自己独占计算机，从而简化程序的编写。每个进程有自己单独的地址空间，并且</p>
+</li>
+<li><p>文件系统</p>
+</li>
+<li><p>设备驱动程序</p>
+</li>
+<li><p>网络接口（NET）</p>
+</li>
+</ul>
+</li>
+</ol>
+<hr>
+<ol start="2">
+<li><p>Linux Shell</p>
+<p>…</p>
+<hr>
+</li>
+<li><p>Linux文件系统</p>
+<p>…</p>
+<hr>
+</li>
+<li><p>应用程序</p>
+<p>Linux系统一般都有一套称为应用程序的程序集，包括文本编辑器、编程语言、x window、Internet工具和数据库等。</p>
+<hr>
+</li>
+<li><p>内核参数</p>
+<p>Linux内核提供了一种通过/proc文件系统，在运行时访问内核内部数据结构、改变内核设置的机制。proc文件系统是一个伪文件系统，它只存在内存当中，而不占用外存空间。它以文件系统的方式为访问系统内核数据的操作提供接口。</p>
+<p>用户和应用程序可以通过/proc得到系统的信息，并可以改变内核的某些参数。由于系统的信息，如进程，是动态改变的，所以用户或应用程序读取/proc文件时，/proc文件系统是动态从系统内核读出所需信息并提交的。在/proc下有三个很重要的目录：/net，/scsi和/sys。/sys目录是可写的，可一通过它来访问或修改内核的参数，而/net和/scsi则依赖于内核配置。例如，如果系统不支持scsi，则scsi目录不存在。</p>
+<p>除了这些，还有一些以数字命名的目录，它们是进程目录。系统中当前运行的每一个进程都有对应的一个目录在/proc下，以进程的PID为目录名，它们是读取进程信息的接口。而/self目录则是读取进程本身的信息接口，是一个link，不同进程访问该目录是获得的信息是不同的，内容等价于/proc/本进程pid/。进程可以通过访问/proc/self来获取自己的系统信息，而不用每次都获取pid。</p>
+</li>
+</ol>
+<p>Reference:</p>
+<p>[1] <a href="https://blog.csdn.net/hguisu/article/details/6122513#t7">Linux系统结构 详解</a></p>
+<p>[2] <a href="https://blog.csdn.net/zdwzzu2006/article/details/7747977">Linux下/proc目录简介</a></p>
 ]]></content>
       <tags>
         <tag>Linux</tag>
@@ -299,67 +360,6 @@
         <tag>computer networking</tag>
         <tag>TCP/IP</tag>
         <tag>计算机网络</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Linux系统结构</title>
-    <url>/2019/11/09/linux_structure/</url>
-    <content><![CDATA[<h1 id="Linux系统结构"><a href="#Linux系统结构" class="headerlink" title="Linux系统结构"></a>Linux系统结构</h1><p>Linux系统有4个主要部分：内核，shell，文件系统和应用程序。内核，shell和文件系统一起形成了基本的操作系统，它们使用户可以运行程序、管理文件并使用系统。</p>
-<p><img src="/../images/linux_structure.png" alt="linux structure"></p>
-<hr>
-<ol>
-<li><p>Linux内核</p>
-<p>内核是操作系统的核心，负责管理系统的进程、内存、设备驱动程序、文件和网络系统。</p>
-<p><img src="/../images/linux_kernel.jpg" alt="linux_kernel"></p>
-<p>**系统调用接口: **SCI层提供了某些机制执行从用户空间到内核的函数调用。SCI实际上是一个非常有用的函数调用多路复用和多路分解服务。</p>
-<ul>
-<li><p>内存管理</p>
-<p>Linux采用了虚拟内存的内存管理方式。Linux将内存划分为容易处理的“内存页”（对于大部分体系结构来说都是4KB）。Linux包括了管理内存的方式，以及物理和虚拟映射所使用的硬件机制。</p>
-<p>不过内存管理要管理的可不止4KB缓冲区。Linux提供了对4KB缓冲区的抽象。这种内存管理模式使用4KB缓冲区为基数，然后从中分配结构，并跟踪内存页使用情况，比如哪些内存页是满的，哪些页面没有完全使用，哪些页面为空。这样就允许该模式根据系统需要来动态调整内存使用。</p>
-<p>为了支持多个用户使用内存，有时会出现可用内存被消耗光的情况。因此，页面可以一处内存并放入磁盘中。这个过程称为交换，因为页面会从内存交换到硬盘上。</p>
-</li>
-<li><p>进程管理</p>
-<p>进程实际是某个特定应用程序的一个运行实体。在Linux系统中，能够同时运行多个进程，Linux通过在短时间间隔内轮流运行这些进程而实现“多任务”。这一短时间间隔称为“时间片”，让进程轮流运行的方法称为“进程调度”。</p>
-<p>进程调度控制进程对CPU的访问。当需要选择下一个进程运行时，由调度程序选择最值得运行的进程。可运行进程实际上是仅等待CPU资源的进程，如果某个进程在等待其他资源，着该进程是不可运行进程。Linux使用了比较简单的基于优先级的进程调度算法选择新的进程。</p>
-<p>通过多任务机制，每个进程可认为只有自己独占计算机，从而简化程序的编写。每个进程有自己单独的地址空间，并且</p>
-</li>
-<li><p>文件系统</p>
-</li>
-<li><p>设备驱动程序</p>
-</li>
-<li><p>网络接口（NET）</p>
-</li>
-</ul>
-</li>
-</ol>
-<hr>
-<ol start="2">
-<li><p>Linux Shell</p>
-<p>…</p>
-<hr>
-</li>
-<li><p>Linux文件系统</p>
-<p>…</p>
-<hr>
-</li>
-<li><p>应用程序</p>
-<p>Linux系统一般都有一套称为应用程序的程序集，包括文本编辑器、编程语言、x window、Internet工具和数据库等。</p>
-<hr>
-</li>
-<li><p>内核参数</p>
-<p>Linux内核提供了一种通过/proc文件系统，在运行时访问内核内部数据结构、改变内核设置的机制。proc文件系统是一个伪文件系统，它只存在内存当中，而不占用外存空间。它以文件系统的方式为访问系统内核数据的操作提供接口。</p>
-<p>用户和应用程序可以通过/proc得到系统的信息，并可以改变内核的某些参数。由于系统的信息，如进程，是动态改变的，所以用户或应用程序读取/proc文件时，/proc文件系统是动态从系统内核读出所需信息并提交的。在/proc下有三个很重要的目录：/net，/scsi和/sys。/sys目录是可写的，可一通过它来访问或修改内核的参数，而/net和/scsi则依赖于内核配置。例如，如果系统不支持scsi，则scsi目录不存在。</p>
-<p>除了这些，还有一些以数字命名的目录，它们是进程目录。系统中当前运行的每一个进程都有对应的一个目录在/proc下，以进程的PID为目录名，它们是读取进程信息的接口。而/self目录则是读取进程本身的信息接口，是一个link，不同进程访问该目录是获得的信息是不同的，内容等价于/proc/本进程pid/。进程可以通过访问/proc/self来获取自己的系统信息，而不用每次都获取pid。</p>
-</li>
-</ol>
-<p>Reference:</p>
-<p>[1] <a href="https://blog.csdn.net/hguisu/article/details/6122513#t7">Linux系统结构 详解</a></p>
-<p>[2] <a href="https://blog.csdn.net/zdwzzu2006/article/details/7747977">Linux下/proc目录简介</a></p>
-]]></content>
-      <tags>
-        <tag>Linux</tag>
-        <tag>操作系统</tag>
-        <tag>OS</tag>
       </tags>
   </entry>
   <entry>
