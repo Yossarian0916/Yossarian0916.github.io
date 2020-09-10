@@ -297,9 +297,57 @@ mjx-container[display="true"] + br {
 <pre><code> ![socket通信](../images/socket通信过程.png)</code></pre>
 <ol start="3">
 <li><p>客户端/服务器socket通信简单例子</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#!&#x2F;usr&#x2F;bin&#x2F;env python3</span><br><span class="line">   # 客户端</span><br><span class="line">import socket</span><br><span class="line">   </span><br><span class="line"></span><br><span class="line">   # create socket descriptor</span><br><span class="line">client &#x3D; socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">   # connect with local loopback address</span><br><span class="line">client.connect((&#39;127.0.0.1&#39;, 9999))</span><br><span class="line">   </span><br><span class="line">   # receive message from server, and send message from console input</span><br><span class="line">   # close the socket until input &#39;exit&#39;</span><br><span class="line">   while True:</span><br><span class="line">   	data &#x3D; client.recv(1024)</span><br><span class="line">   	print(data.decode(&#39;utf-8&#39;))</span><br><span class="line">   	</span><br><span class="line">   	msg &#x3D; input(&#39;&gt;&gt;&gt; &#39;)</span><br><span class="line">   	client.send(msg.encode(&#39;utf-8&#39;))</span><br><span class="line">   	if msg &#x3D;&#x3D; &#39;exit&#39;:</span><br><span class="line">   		break</span><br><span class="line">   client.close()</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-python3" data-language="python3"><code class="language-python3">#!&#x2F;usr&#x2F;bin&#x2F;env python3
+   # 客户端
+import socket
+   
 
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#!&#x2F;usr&#x2F;bin&#x2F;env python3</span><br><span class="line"># 服务器端</span><br><span class="line">import socket</span><br><span class="line">import time</span><br><span class="line">import random</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">s &#x3D; socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">s.bind((&#39;127.0.0.1&#39;, 9999))</span><br><span class="line">s.listen(5)  # backlog number</span><br><span class="line">print(&#39;Waiting for connection...&#39;)</span><br><span class="line"></span><br><span class="line"># accept connection from client</span><br><span class="line"># receive message from client and send a random integer back </span><br><span class="line"># until receive &#39;exit&#39;, close the connection and wait for next one</span><br><span class="line">while True:</span><br><span class="line">	conn, addr &#x3D; s.accept()</span><br><span class="line">	conn.send(b&#39;Welcome&#39;)</span><br><span class="line">	print(&#39;Connected with %s:%s&#39; % addr)</span><br><span class="line">	while True:</span><br><span class="line">		data &#x3D; conn.recv(1024)</span><br><span class="line">		time.sleep(1)  # simple way to unpack block</span><br><span class="line">		if not data or data.encode(&#39;utf-8&#39;) &#x3D;&#x3D; &#39;exit&#39;:</span><br><span class="line">			break</span><br><span class="line">		else:</span><br><span class="line">			msg &#x3D; random.randint(1, 100)</span><br><span class="line">			conn.send(str(msg).encode(&#39;utf-8&#39;))</span><br><span class="line">	conn.close()</span><br><span class="line">	print(&#39;Connection from %s:%s closed\n&#39; % addr)</span><br></pre></td></tr></table></figure>
+   # create socket descriptor
+client &#x3D; socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+   # connect with local loopback address
+client.connect((&#39;127.0.0.1&#39;, 9999))
+   
+   # receive message from server, and send message from console input
+   # close the socket until input &#39;exit&#39;
+   while True:
+   	data &#x3D; client.recv(1024)
+   	print(data.decode(&#39;utf-8&#39;))
+   	
+   	msg &#x3D; input(&#39;&gt;&gt;&gt; &#39;)
+   	client.send(msg.encode(&#39;utf-8&#39;))
+   	if msg &#x3D;&#x3D; &#39;exit&#39;:
+   		break
+   client.close()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-python3" data-language="python3"><code class="language-python3">#!&#x2F;usr&#x2F;bin&#x2F;env python3
+# 服务器端
+import socket
+import time
+import random
+
+
+s &#x3D; socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind((&#39;127.0.0.1&#39;, 9999))
+s.listen(5)  # backlog number
+print(&#39;Waiting for connection...&#39;)
+
+# accept connection from client
+# receive message from client and send a random integer back 
+# until receive &#39;exit&#39;, close the connection and wait for next one
+while True:
+	conn, addr &#x3D; s.accept()
+	conn.send(b&#39;Welcome&#39;)
+	print(&#39;Connected with %s:%s&#39; % addr)
+	while True:
+		data &#x3D; conn.recv(1024)
+		time.sleep(1)  # simple way to unpack block
+		if not data or data.encode(&#39;utf-8&#39;) &#x3D;&#x3D; &#39;exit&#39;:
+			break
+		else:
+			msg &#x3D; random.randint(1, 100)
+			conn.send(str(msg).encode(&#39;utf-8&#39;))
+	conn.close()
+	print(&#39;Connection from %s:%s closed\n&#39; % addr)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
