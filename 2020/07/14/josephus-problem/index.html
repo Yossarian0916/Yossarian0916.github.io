@@ -30,7 +30,7 @@
 <meta property="og:description" content="Josephus Problem问题描述Josephus problem (or Josephus permutation), 简单说，N个人围成一圈，从某一人（比如第k个）开始报数，报到m的人退出，如此循环，直到最后一个人  People are standing in a circle waiting to be executed. Counting begins at a specified">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-07-14T16:00:00.000Z">
-<meta property="article:modified_time" content="2020-09-10T19:57:28.687Z">
+<meta property="article:modified_time" content="2020-09-13T21:25:12.162Z">
 <meta property="article:author" content="Yossarian42">
 <meta property="article:tag" content="Algorithm">
 <meta property="article:tag" content="LeetCode">
@@ -200,7 +200,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-09-11 03:57:28" itemprop="dateModified" datetime="2020-09-11T03:57:28+08:00">2020-09-11</time>
+                <time title="Modified: 2020-09-14 05:25:12" itemprop="dateModified" datetime="2020-09-14T05:25:12+08:00">2020-09-14</time>
               </span>
 
           
@@ -217,7 +217,6 @@
         <h1 id="Josephus-Problem"><a href="#Josephus-Problem" class="headerlink" title="Josephus Problem"></a>Josephus Problem</h1><h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>Josephus problem (or Josephus permutation), 简单说，N个人围成一圈，从某一人（比如第k个）开始报数，报到m的人退出，如此循环，直到最后一个人</p>
 <blockquote>
 <p>People are standing in a circle waiting to be executed. Counting begins at a specified point in the circle and proceeds around the circle in a specified direction. After a specified number of people are skipped, the next person is executed. The procedure is repeated with the remaining people, starting with the next person, going in the same direction and skipping the same number of people, until only one person remains, and is freed.</p>
-<pre><code>                                                           -- from Wikipedia</code></pre>
 </blockquote>
 <h2 id="解法1-circular-linked-list"><a href="#解法1-circular-linked-list" class="headerlink" title="解法1: circular linked list"></a>解法1: circular linked list</h2><p>循环链表解法很直接，复杂度O(n)</p>
 <p>每个Node就是问题中的一个人，数到谁就删除相应的Node，最后只剩一个Node</p>
