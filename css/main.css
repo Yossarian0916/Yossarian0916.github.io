@@ -1284,7 +1284,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #424aaf;
+  background: #ffff8b;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2562,7 +2562,7 @@ mjx-container + br {
   padding: 0;
 }
 body {
-  background-image: url("/images/blurry_time_square.jpg");
+  background-image: url("../images/blurry_time_square.jpg");
   background-attachment: fixed;
   background-repeat: round;
   background-size: contain;
