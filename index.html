@@ -279,6 +279,104 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://yossarian0916.github.io/2020/11/20/postgresql-install/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/gopher.png">
+      <meta itemprop="name" content="Yossarian42">
+      <meta itemprop="description" content="personal notes, keep track of learning tech">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="乱笔">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/11/20/postgresql-install/" class="post-title-link" itemprop="url">Install PostgreSQL 12</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-11-20 00:00:00" itemprop="dateCreated datePublished" datetime="2020-11-20T00:00:00+08:00">2020-11-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-12-13 10:17:36" itemprop="dateModified" datetime="2020-12-13T10:17:36+08:00">2020-12-13</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="PostgreSQL-12-Installation"><a href="#PostgreSQL-12-Installation" class="headerlink" title="PostgreSQL 12 Installation"></a>PostgreSQL 12 Installation</h1><ol>
+<li><p>add postgresql-12 repository</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -</span><br><span class="line">$ <span class="built_in">echo</span> <span class="string">&quot;deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main&quot;</span> |sudo tee /etc/apt/sources.list.d/pgdg.list</span><br><span class="line">$ sudo apt update</span><br></pre></td></tr></table></figure>
+
+<p>the repository contains packages including: </p>
+<ul>
+<li>postgresql-client</li>
+<li>postgresql</li>
+<li>libpq-dev</li>
+<li>postgresql-server-dev</li>
+<li>pgadmin packages</li>
+</ul>
+</li>
+<li><p>install postgresql server and client</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt -y install postgresql-12 postgresql-client-12</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>postgresql first-time login</p>
+<p>Switch to user postgres to login database postgres. Postgresql has by default 3 databases “postgres, template 0, template 1”.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo -u postgres psql postgres</span><br></pre></td></tr></table></figure>
+
+<p>create a test database and a test user</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">   postgres&#x3D;# CREATE DATABASE mytestdb;</span><br><span class="line">   CREATE DATABASE</span><br><span class="line">   postgres&#x3D;# CREATE USER mytestuser WITH ENCRYPTED PASSWORD &#39;MyStr0ngP@ss&#39;;</span><br><span class="line">   CREATE ROLE</span><br><span class="line">   postgres&#x3D;# GRANT ALL PRIVILEGES ON DATABASE mytestdb TO mytestuser;</span><br><span class="line">GRANT</span><br></pre></td></tr></table></figure>
+
+<p>now list all databases</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">postgres&#x3D;# \l</span><br></pre></td></tr></table></figure>
+
+<p>connect to newly-created database</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">postgres&#x3D;# \c mytestdb</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ol>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p><a target="_blank" rel="noopener" href="https://computingforgeeks.com/install-postgresql-12-on-ubuntu/">How To Install PostgreSQL 12 on Ubuntu 20.04/18.04/16.04</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://yossarian0916.github.io/2020/11/19/RMQ-ST-table/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1021,124 +1119,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://yossarian0916.github.io/2019/10/05/GPU%E5%8A%A0%E9%80%9F%E7%89%88TensorFlow%E5%AE%89%E8%A3%85%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/gopher.png">
-      <meta itemprop="name" content="Yossarian42">
-      <meta itemprop="description" content="personal notes, keep track of learning tech">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="乱笔">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/10/05/GPU%E5%8A%A0%E9%80%9F%E7%89%88TensorFlow%E5%AE%89%E8%A3%85%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/" class="post-title-link" itemprop="url">tensorflow-gpu installation</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2019-10-05 00:00:00" itemprop="dateCreated datePublished" datetime="2019-10-05T00:00:00+08:00">2019-10-05</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-09-14 02:38:19" itemprop="dateModified" datetime="2020-09-14T02:38:19+08:00">2020-09-14</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="GPU加速版TensorFlow安装踩坑记录"><a href="#GPU加速版TensorFlow安装踩坑记录" class="headerlink" title="GPU加速版TensorFlow安装踩坑记录"></a>GPU加速版TensorFlow安装踩坑记录</h2><p>System information:</p>
-<ul>
-<li><p>Ubuntu 18.04 LTS</p>
-</li>
-<li><p>TensorFlow version: 1.13</p>
-</li>
-<li><p>Python version: 3.6</p>
-</li>
-<li><p>CUDA: 10.0</p>
-</li>
-<li><p>cuDNN: 7.4</p>
-</li>
-<li><p>GPU: Nvidia GeForce GTX 1050</p>
-</li>
-</ul>
-<ol>
-<li><p>千万提前确定好需要使用的tensorflow版本，再下载版本匹配的CUDA, cuDNN</p>
-<p>幸好TensorFlow已经帮我们测试好了，在官网可以轻松找到推荐的<a target="_blank" rel="noopener" href="https://www.tensorflow.org/install/source#tested_build_configurations">构建配置</a>。因为我平时都在用Ubuntu18.04，在这把Linux平台上合适的配置放出来</p>
-<p><img src="/../images/TensorFlow-linux-%E6%9E%84%E5%BB%BA%E9%85%8D%E7%BD%AE.png" alt="Linux平台构建配置"></p>
-</li>
-<li><p>确定好构建配置，这一步可以<a target="_blank" rel="noopener" href="https://developer.nvidia.com/cuda-toolkit-archive">下载CUDA</a>和<a target="_blank" rel="noopener" href="https://developer.nvidia.com/rdp/cudnn-archive">cuDNN</a>了</p>
-<p>CUDA安装指令在官网已经详细贴出来，我就不再重复（真正的坑在安装cuDNN的时候等着呢）</p>
-<p><a target="_blank" rel="noopener" href="https://docs.nvidia.com/deeplearning/sdk/cudnn-install/index.html#installlinux">安装cuDNN</a>（这里还是以Linux平台为例）：</p>
-<ul>
-<li><p>下载cuDNN需要先注册</p>
-</li>
-<li><p>解压tar包，先修改tar包文件权限</p>
-<p><code>$sudo chmod +x cudnn-10.0-linux-x64-v7.4.2.tgz</code></p>
-<p><code>$tar -xzvf cudnn-10.0-linux-x64-v7.4.2.24.tgz</code></p>
-</li>
-<li><p>复制下列文件到CUDA Toolkit的文件夹，修改这些文件权限</p>
-<p>一般CUDA Toolkit会自动安装在<code>/usr/local</code>下面</p>
-<p><code>$sudo cp cuda/include/cudnn.h /usr/local/cuda/include</code></p>
-<p><code>$sudo cp cuda/lib64/libcudnn* /usr/local/cuda/lib64</code></p>
-<p><code>$sudo chmod a+r /usr/local/cuda/include/cudnn.h /usr/local/cuda/lib64/libcudnn*</code></p>
-</li>
-</ul>
-</li>
-<li><p>全部安装好后，检查版本是否正确</p>
-<ul>
-<li><p>CUDA版本</p>
-<p><code>$cat /usr/local/cuda/version.txt</code> 或者<code>nvcc --version</code></p>
-</li>
-<li><p>cuDNN版本</p>
-<p><code>$cat /usr/local/cuda/include/cudnn.h | grep CUDNN_MAJOR -A 2</code></p>
-<p>ps: 有时候遇到<code>failed call to cuInit: CUDA_ERROR_UNKNOWN: unknown error</code>需要重启电脑</p>
-</li>
-</ul>
-</li>
-<li><p>最后的最后，检查TensorFlow是否能使用GPU加速</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> tensorflow.python.client <span class="keyword">import</span> device_lib</span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># list the avilable devices in local processes</span></span><br><span class="line">device_lib.list_local_devices()</span><br><span class="line"></span><br><span class="line"><span class="comment"># matrix multiplying with GPU</span></span><br><span class="line">a = tf.constant([<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>, <span class="number">4.0</span>, <span class="number">5.0</span>, <span class="number">6.0</span>], shape=[<span class="number">2</span>, <span class="number">3</span>], name=<span class="string">&#x27;a&#x27;</span>)</span><br><span class="line">b = tf.constant([<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>, <span class="number">4.0</span>, <span class="number">5.0</span>, <span class="number">6.0</span>], shape=[<span class="number">3</span>, <span class="number">2</span>], name=<span class="string">&#x27;b&#x27;</span>)</span><br><span class="line">c = tf.matmul(a, b)</span><br><span class="line"></span><br><span class="line">sess = tf.Session(config=tf.ConfigProto(log_device_placement=<span class="literal">True</span>))</span><br><span class="line">print(sess.run(c))</span><br></pre></td></tr></table></figure>
-
-</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1210,14 +1190,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-count">12</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
