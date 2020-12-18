@@ -29,14 +29,14 @@
 <meta property="og:site_name" content="乱笔">
 <meta property="og:description" content="Range Minimum&#x2F;Maximum Query (RMQ)RMQ对于给定长度n的数列A，询问区间数列A在（i,j）内最大最小值。 解决方法：（A长度为n，q次查询）  搜索    复杂度：O(n) - O(qn) 线段树   预处理：O(n) - 查询：O(qlogn) Sparse table(ST) 预处理：O(nlogn) - 查询：O(q)  ST算法ST本质上是动态规划，适用的情">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://yossarian0916.github.io/RMQ-ST-table/rmq_st_query.png">
+<meta property="og:image" content="https://yossarian0916.github.io/2020/11/19/RMQ-ST-table/rmq_st_query.png">
 <meta property="article:published_time" content="2020-11-18T20:03:26.000Z">
-<meta property="article:modified_time" content="2020-12-18T23:20:05.452Z">
+<meta property="article:modified_time" content="2020-12-18T23:36:05.662Z">
 <meta property="article:author" content="Yossarian42">
 <meta property="article:tag" content="algorithms">
 <meta property="article:tag" content="dynamic programming">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://yossarian0916.github.io/RMQ-ST-table/rmq_st_query.png">
+<meta name="twitter:image" content="https://yossarian0916.github.io/2020/11/19/RMQ-ST-table/rmq_st_query.png">
 
 <link rel="canonical" href="https://yossarian0916.github.io/2020/11/19/RMQ-ST-table/">
 
@@ -230,7 +230,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-12-19 07:20:05" itemprop="dateModified" datetime="2020-12-19T07:20:05+08:00">2020-12-19</time>
+                <time title="Modified: 2020-12-19 07:36:05" itemprop="dateModified" datetime="2020-12-19T07:36:05+08:00">2020-12-19</time>
               </span>
 
           
@@ -260,7 +260,7 @@
 <p><code>dp[i][0]</code>记录的是原来数组的值，<code>i</code>从1开始是为了query时候方便，不用再改写成从0开始的index</p>
 <h3 id="Query"><a href="#Query" class="headerlink" title="Query"></a>Query</h3><p>[l, r]区间可以按照[i, i + $2^j$ - 1]的模式划分成2块，[l, l + $2^k$ - 1]和[r - $2^k$ + 1, r]，</p>
 <p>其中k = $\lfloor log_2(r - l + 1)\rfloor$ 向下取整</p>
-<p><img src="/RMQ-ST-table/rmq_st_query.png" alt="query示意图"></p>
+<p><img src="/2020/11/19/RMQ-ST-table/rmq_st_query.png" alt="query示意图"></p>
 <p>2段小区间长度相等，记为len，证明小区间有重叠：</p>
 <p>$\lfloor log_2(len)\rfloor$ &gt;= $log_2(len)$ - 1，所以$2^{\lfloor log_2(len)\rfloor}$ &gt;= len/2, 这样2段小区间便有了重叠，保证query操作的正确性</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> k = (<span class="keyword">int</span>) (Math.log(r - l + <span class="number">1</span>) / Math.log(<span class="number">2</span>));</span><br><span class="line">    <span class="keyword">return</span> Math.max(dp[l][k], dp[r - (<span class="number">1</span>&lt;&lt;k) + <span class="number">1</span>][k]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
