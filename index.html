@@ -548,7 +548,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-12-13 10:17:36" itemprop="dateModified" datetime="2020-12-13T10:17:36+08:00">2020-12-13</time>
+                <time title="Modified: 2021-03-13 08:08:15" itemprop="dateModified" datetime="2021-03-13T08:08:15+08:00">2021-03-13</time>
               </span>
 
           
@@ -565,7 +565,6 @@
           <h1 id="PostgreSQL-12-Installation"><a href="#PostgreSQL-12-Installation" class="headerlink" title="PostgreSQL 12 Installation"></a>PostgreSQL 12 Installation</h1><ol>
 <li><p>add postgresql-12 repository</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -</span><br><span class="line">$ <span class="built_in">echo</span> <span class="string">&quot;deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main&quot;</span> |sudo tee /etc/apt/sources.list.d/pgdg.list</span><br><span class="line">$ sudo apt update</span><br></pre></td></tr></table></figure>
-
 <p>the repository contains packages including: </p>
 <ul>
 <li>postgresql-client</li>
@@ -576,23 +575,34 @@
 </ul>
 </li>
 <li><p>install postgresql server and client</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt -y install postgresql-12 postgresql-client-12</span><br></pre></td></tr></table></figure>
-</li>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt -y install postgresql-12 postgresql-client-12</span><br></pre></td></tr></table></figure></li>
 <li><p>postgresql first-time login</p>
 <p>Switch to user postgres to login database postgres. Postgresql has by default 3 databases “postgres, template 0, template 1”.</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo -u postgres psql postgres</span><br></pre></td></tr></table></figure>
-
 <p>create a test database and a test user</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">   postgres&#x3D;# CREATE DATABASE mytestdb;</span><br><span class="line">   CREATE DATABASE</span><br><span class="line">   postgres&#x3D;# CREATE USER mytestuser WITH ENCRYPTED PASSWORD &#39;MyStr0ngP@ss&#39;;</span><br><span class="line">   CREATE ROLE</span><br><span class="line">   postgres&#x3D;# GRANT ALL PRIVILEGES ON DATABASE mytestdb TO mytestuser;</span><br><span class="line">GRANT</span><br></pre></td></tr></table></figure>
-
+<p>(CREATE USER = CREATE ROLE + LOGIN permission)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">   postgres&#x3D;# CREATE DATABASE mytestdb;</span><br><span class="line">   CREATE DATABASE</span><br><span class="line">   postgres&#x3D;# CREATE USER mytestuser WITH ENCRYPTED PASSWORD &#39;MyStr0ngP@ss&#39;;</span><br><span class="line">CREATE ROLE</span><br><span class="line">   postgres&#x3D;# GRANT ALL PRIVILEGES ON DATABASE mytestdb TO mytestuser;</span><br><span class="line">GRANT</span><br></pre></td></tr></table></figure>
 <p>now list all databases</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">postgres&#x3D;# \l</span><br></pre></td></tr></table></figure>
-
 <p>connect to newly-created database</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">postgres&#x3D;# \c mytestdb</span><br></pre></td></tr></table></figure>
 
 
-
+</li>
+</ol>
+<ol start="4">
+<li><p>“Peer authentication failed for user XXX”</p>
+<p>edit in file <code>/etc/postgresql/12/main/pg_hba.conf</code>, replace <code>peer</code> with <code>md5</code></p>
+<ul>
+<li><code>peer</code> means it will trust the authenticity of UNIX user hence does not prompt for the password.</li>
+<li><code>md5</code> means it will always ask for a password, and validate it after hashing with <code>MD5</code></li>
+</ul>
+<p>from</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># TYPE  DATABASE        USER            ADDRESS                 METHOD</span><br><span class="line"></span><br><span class="line"># &quot;local&quot; is for Unix domain socket connections only</span><br><span class="line">local   all             all                                     peer</span><br><span class="line"># IPv4 local connections:</span><br><span class="line">host    all             all             127.0.0.1&#x2F;32            md5</span><br></pre></td></tr></table></figure>
+<p>to</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># TYPE  DATABASE        USER            ADDRESS                 METHOD</span><br><span class="line"></span><br><span class="line"># &quot;local&quot; is for Unix domain socket connections only</span><br><span class="line">local   all             all                                     md5</span><br><span class="line"># IPv4 local connections:</span><br><span class="line">host    all             all             127.0.0.1&#x2F;32            md5</span><br></pre></td></tr></table></figure>
+<p>then restart postgresql</p>
+<p><code>sudo systemctl restart postgresql.service</code></p>
 </li>
 </ol>
 <h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p><a target="_blank" rel="noopener" href="https://computingforgeeks.com/install-postgresql-12-on-ubuntu/">How To Install PostgreSQL 12 on Ubuntu 20.04/18.04/16.04</a></p>
@@ -1212,6 +1222,7 @@
 
   
   <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
   <script src="/lib/velocity/velocity.min.js"></script>
   <script src="/lib/velocity/velocity.ui.min.js"></script>
@@ -1225,6 +1236,65 @@
 
 
 <script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
 
 
 
@@ -1249,6 +1319,7 @@
 
 
 
+    <div id="pjax">
   
 
   
@@ -1328,5 +1399,6 @@
     </div>
   </div>
 </div><script src="/js/injector.js"></script>
+    </div>
 </body>
 </html>
