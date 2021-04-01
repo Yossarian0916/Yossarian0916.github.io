@@ -22,18 +22,20 @@
     var CONFIG = {"hostname":"yossarian0916.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":true,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":-1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
-  <meta name="description" content="个人博客, 学习，记录">
-<meta property="og:type" content="website">
-<meta property="og:title" content="乱笔">
-<meta property="og:url" content="https://yossarian0916.github.io/tags/%E7%BC%96%E7%A0%81/index.html">
+  <meta name="description" content="Java中的char类型和中文字符开篇发问 1Java里的char类型能不能存储一个中文字符？ 答案是：可以，但细究起来，并不是简简单单的可以 Unicode对于中文来说，编码方式的使用字节大小各有不同。utf-8：一个中文占用三个字节，utf-16：一个中文占2个字节；gbk(中国人的编码方式)一个汉字2个字节等。Unicode类似一个文字容器，编码方式是一个解码工具，目的是在unicode的字">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java_char_chinese">
+<meta property="og:url" content="https://yossarian0916.github.io/2021/04/01/java-char-chinese/index.html">
 <meta property="og:site_name" content="乱笔">
-<meta property="og:description" content="个人博客, 学习，记录">
+<meta property="og:description" content="Java中的char类型和中文字符开篇发问 1Java里的char类型能不能存储一个中文字符？ 答案是：可以，但细究起来，并不是简简单单的可以 Unicode对于中文来说，编码方式的使用字节大小各有不同。utf-8：一个中文占用三个字节，utf-16：一个中文占2个字节；gbk(中国人的编码方式)一个汉字2个字节等。Unicode类似一个文字容器，编码方式是一个解码工具，目的是在unicode的字">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-04-01T15:27:00.000Z">
+<meta property="article:modified_time" content="2021-04-01T15:28:17.124Z">
 <meta property="article:author" content="Yossarian42">
-<meta property="article:tag" content="yossarian42">
+<meta property="article:tag" content="Java">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://yossarian0916.github.io/tags/%E7%BC%96%E7%A0%81/">
+<link rel="canonical" href="https://yossarian0916.github.io/2021/04/01/java-char-chinese/">
 
 
 <script id="page-configurations">
@@ -41,12 +43,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'en'
   };
 </script>
 <link rel="stylesheet" type="text/css" href="/css/injector.css" />
-  <title>Tag: 编码 | 乱笔</title>
+  <title>java_char_chinese | 乱笔</title>
   
 
 
@@ -188,51 +190,130 @@
         <div class="content-wrap">
           
 
-          <div class="content tag">
+          <div class="content post posts-expand">
             
 
+    
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <h2 class="collection-header">编码
-          <small>Tag</small>
-        </h2>
-      </div>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://yossarian0916.github.io/2021/04/01/java-char-chinese/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/gopher.png">
+      <meta itemprop="name" content="Yossarian42">
+      <meta itemprop="description" content="个人博客, 学习，记录">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="乱笔">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          java_char_chinese
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2021-04-01 23:27:00 / Modified: 23:28:17" itemprop="dateCreated datePublished" datetime="2021-04-01T23:27:00+08:00">2021-04-01</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2020</span>
+        <h1 id="Java中的char类型和中文字符"><a href="#Java中的char类型和中文字符" class="headerlink" title="Java中的char类型和中文字符"></a>Java中的char类型和中文字符</h1><p>开篇发问</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Java里的char类型能不能存储一个中文字符？</span><br></pre></td></tr></table></figure>
+<p>答案是：可以，但细究起来，并不是简简单单的可以</p>
+<h3 id="Unicode"><a href="#Unicode" class="headerlink" title="Unicode"></a>Unicode</h3><p>对于中文来说，编码方式的使用字节大小各有不同。utf-8：一个中文占用三个字节，utf-16：一个中文占2个字节；gbk(中国人的编码方式)一个汉字2个字节等。Unicode类似一个文字容器，编码方式是一个解码工具，目的是在unicode的字符集中寻找一个对应的字符(我的理解是编码方式是快递员)。众所周知，Unicode有3种编码方式：utf-8, utf-16, utf-32。Unicode标准把代码点分成了17个代码平面（Code Plane），编号为#0到#16。每个代码平面包含65,536（2^16）个代码点（17*65,536=1,114,112）。其中，Plane#0叫做基本多语言平面（Basic Multilingual Plane，BMP），其余平面叫做补充平面（Supplementary Planes）。</p>
+<p>下面是这些平面的名字和用途：</p>
+<p>Plane#0 BMP（Basic Multilingual Plane）大部分常用的字符都坐落在这个平面内，比如ASCII字符，汉字等。<br>Plane#1 SMP（Supplementary Multilingual Plane）这个平面定义了一些古老的文字，不常用。<br>Plane#2 SIP（Supplementary Ideographic Plane）这个平面主要是一些BMP中没有包含汉字。<br>Plane#14 SSP（Supplementary Special-purpose Plane）这个平面定义了一些非图形字符。<br>Plane#15 SPUA-A（Supplementary Private Use Area A）<br>Plane#16 SPUA-B（Supplementary Private Use Area B）</p>
+<h3 id="Java中char类型"><a href="#Java中char类型" class="headerlink" title="Java中char类型"></a>Java中char类型</h3><p>Java中的char类型是按照Unicode规范实现的一种数据类型，固定16bit大小。现如今，Unicode字符集已经进行了扩展，表示的范围已经超过了16bit。Unicode字符集的数值范围扩大到了[U+0000,U+10FFFF]。一个char值可以表示BMP范围内的Unicode字符。BMP表示[U+0000, U+FFFF]之间的Unicode字符。而且，绝大部分的中文字符的Unicode范围是[0x4E00, 0x9FBB],恰好是在BMP范围内。</p>
+<p>就常用的UTF-8编码来说，我们都听说过他是用3或者4个字节来表示一个汉字的。就拿3个字节来算的话，一个char也存不下？？</p>
+<p>UTF-8编码和代码点对应关系:</p>
+<table>
+<thead>
+<tr>
+<th align="center">Unicode编码</th>
+<th align="center">UTF-8字节流</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">000000 - 00007F</td>
+<td align="center">0xxxxxxx</td>
+</tr>
+<tr>
+<td align="center">000080 - 0007FF</td>
+<td align="center">110xxxxx 10xxxxxx</td>
+</tr>
+<tr>
+<td align="center">000800 - 00FFFF</td>
+<td align="center">1110xxxx 10xxxxxx 10xxxxxx</td>
+</tr>
+<tr>
+<td align="center">010000 - 10FFFF</td>
+<td align="center">11110xxx 10xxxxxxx 10xxxxxx 10xxxxxx</td>
+</tr>
+</tbody></table>
+<p>当一个字节表示一个字符时，二进制开头是0；当两个字节表示一个字符时，二进制开头是11；当3个字节表示一个字符时，二进制开头是111。UTF-8编码加入了多余的标识位来区分一个Unicode代码点！才会出现中文汉字集中在[0x4E00, 0x9FBB]范围的16bit数值内，UTF-8却需要3个字节存储的原因。</p>
+<p>那么UTF-8占用3到4个字节，char只能存2个字节（16bit），然而UTF-8中的几乎所有汉字都是在BMP范围内，也就是在char可存储的范围内，是不是矛盾了？</p>
+<p>其实不然，</p>
+<ol>
+<li><p>char字符存储的是Unicode编码的代码点，也就是存储的是U+FF00这样的数值，然而我们在调试或者输出到输出流的时候，是JVM或者开发工具按照代码点对应的编码字符输出的，Java内部使用UTF-16编码。</p>
+</li>
+<li><p>所以虽然UTF-8编码的中文字符是占用3个或者4个字节，但是对应的代码点仍然集中在[0x4E00, 0x9FBB]，所以char是能够存下在这个范围内的中文字符的。</p>
+</li>
+<li><p>但是对于超过16bit的Unicode字符集，也就是Unicode的扩展字符集，一个char是放不下的，需要两个char才能放下。</p>
+</li>
+</ol>
+<p>另外，如何判断java字符串是否包含中文？</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 判断某个字符是否为汉字</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> c 需要判断的字符</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 是汉字返回true，否则返回false</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isChinese</span><span class="params">(<span class="keyword">char</span> c)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    String regex = <span class="string">&quot;[\\u4e00-\\u9fa5]&quot;</span>;</span><br><span class="line">    <span class="keyword">return</span> String.valueOf(c).matches(regex);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里没有考虑CJK扩展字符集。</p>
+<p>PS: 一个查找中文字符utf-8编码网址：<a target="_blank" rel="noopener" href="http://www.mytju.com/classcode/tools/encode_utf8.asp">http://www.mytju.com/classcode/tools/encode_utf8.asp</a></p>
+<h2 id="reference"><a href="#reference" class="headerlink" title="reference"></a>reference</h2><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/softidea/p/10271219.html">Java中的char究竟能存中文吗？</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/buqutianya/article/details/80685437">细说Java中的字符和字符串（一）</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/hankcs/HanLP/blob/master/src/main/java/com/hankcs/hanlp/utility/TextUtility.java">HanLP自然语言处理库</a></p>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+    
+    
+    
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-02-17T00:00:00+08:00"
-              content="2020-02-17">
-          02-17
-        </time>
-      </div>
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+          </div>
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/02/17/unicode/" itemprop="url">
-            <span itemprop="name">字符编码</span>
-          </a>
-      </div>
+        
 
-    </header>
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/02/23/binary-indexed-tree/" rel="prev" title="Binary Indexed Tree">
+      <i class="fa fa-chevron-left"></i> Binary Indexed Tree
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
   </article>
-
-    </div>
-  </div>
   
   
-  
-
   
 
 
@@ -285,6 +366,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Java%E4%B8%AD%E7%9A%84char%E7%B1%BB%E5%9E%8B%E5%92%8C%E4%B8%AD%E6%96%87%E5%AD%97%E7%AC%A6"><span class="nav-number">1.</span> <span class="nav-text">Java中的char类型和中文字符</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Unicode"><span class="nav-number">1.0.1.</span> <span class="nav-text">Unicode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java%E4%B8%ADchar%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.0.2.</span> <span class="nav-text">Java中char类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reference"><span class="nav-number">1.1.</span> <span class="nav-text">reference</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
