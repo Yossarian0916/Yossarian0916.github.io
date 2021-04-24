@@ -81,11 +81,7 @@
   </style>
 </noscript>
 
-<!-- hexo injector head_end start -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
-<!-- hexo injector head_end end --></head>
+</head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -261,7 +257,7 @@
 <p>中国人在这个规定上有自己的扩展（如GBK），英国人也有自己的扩展（如ISO-8859-1,即latin-1）。所以ISO-8859-1和GBK都可以称之为ANSI编码，因为它们符合ANSI规定。以Windows系统为例，中文系统中所指的ANSI编码就是GBK，英文系统中的ANSI编码就是ISO-8859-1。</p>
 <h3 id="MBCS"><a href="#MBCS" class="headerlink" title="MBCS"></a>MBCS</h3><p>多字节字符集(Multi-Byte Character Set)，采用不定长度可以是一个字节，也可以是两个字节，也可以是三个字节来进行编码。大多数情况下2个字节就够用了，汉字就分配两个字节，称之为DBCS（Double-Byte Chactacter Set）。</p>
 <p>在Linux系统中看得到MBCS说法，在Windows中呢？其实就是ANSI，ANSI只规定了第一个字节的位置是ASCII，超出这个范围的，肯定也是多字节的了。</p>
-<h2 id="Unicode字符集"><a href="#Unicode字符集" class="headerlink" title="Unicode字符集"></a>Unicode字符集</h2><p><strong><em>通过以上的介绍知道，各种解决方案都是各自为政，解决不了 “同一个系统中同时显示全宇宙的所有字符” 这个问题。</em></strong></p>
+<h2 id="Unicode字符集"><a href="#Unicode字符集" class="headerlink" title="Unicode字符集"></a>Unicode字符集</h2><p><em><strong>通过以上的介绍知道，各种解决方案都是各自为政，解决不了 “同一个系统中同时显示全宇宙的所有字符” 这个问题。</strong></em></p>
 <p>于是就有两个组织，他们开始着手做这件事情，UCS和Unicode诞生了。</p>
 <p>通用字符集（UCS，Universal Character Set）是由国际标准化组织（ISO）制定的 ISO 10646标准所定义的字符集。通常也译为通用多八位编码字符集。统一码（Unicode）是由统一码联盟指定的。</p>
 <p>后来发现，一山不容二虎，世界人民不需要两个目的相同但是具体实现却有差异的编码方案。UCS和Unicode握手言和，从 Unicode 2.0 起，采用了和ISO 10646-1的编码方案，它们在相同的码位上都对应同样的字符。尽管这两个组织目前还在相互独立的在发布字符编码标准。</p>
@@ -373,14 +369,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-count">18</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-count">19</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

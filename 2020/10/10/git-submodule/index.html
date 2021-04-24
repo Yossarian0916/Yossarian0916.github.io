@@ -79,11 +79,7 @@
   </style>
 </noscript>
 
-<!-- hexo injector head_end start -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
-<!-- hexo injector head_end end --></head>
+</head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -249,26 +245,20 @@
 <p>例如：在project目录下<code>git submodule add github.com/username/projectA moduleA</code></p>
 <p>此时主项目仓库会多出两个文件：<code>.gitmodules</code>和<code>moduleA</code>, <code>.gitmodules</code>包含submodule的主要信息</p>
 <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[submodule &quot;ModuleA&quot;]</span><br><span class="line">path=moduleA</span><br><span class="line">url=github.com/username/projectA</span><br></pre></td></tr></table></figure>
-
 <p><code>moduleA</code>文件记录子模块的commit id。父项目并不会记录submodule的文件变动，只是按照commit id指定子模块的git HEAD。所以<code>.gitmodules</code>和<code>moduleA</code>都是需要提交到父项目的远程仓库中去的</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git add .gitmodules moduleA</span><br><span class="line">git commit -m <span class="string">&#x27;add submodule projectA&#x27;</span></span><br></pre></td></tr></table></figure>
-
 <h3 id="2-克隆带子模块的repo"><a href="#2-克隆带子模块的repo" class="headerlink" title="2. 克隆带子模块的repo"></a>2. 克隆带子模块的repo</h3><p>方法一：先clone父项目，再初始化submodule，最后更新submodule。初始化只做一次，之后每次只需要update。默认submodule不在任何分支上，它指向父项目保存的submodule commit id</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> github.com/username/project &amp;&amp; <span class="built_in">cd</span> project</span><br><span class="line">git submodule init</span><br><span class="line">git submodule update</span><br><span class="line"><span class="built_in">cd</span> ..</span><br></pre></td></tr></table></figure>
-
 <p>方法二：带上参数<code>--recursive-submodules</code></p>
 <p><code>git clone github.com/username/project --recursive-submodules</code></p>
 <h3 id="3-修改submodule"><a href="#3-修改submodule" class="headerlink" title="3. 修改submodule"></a>3. 修改submodule</h3><p>修改子模块代码只对子模块的版本库产生影响，对父项目的版本库不会产生任何影响。在子项目中修改代码并提交，之后在父项目中便可以看到子项目的新提交，正常add，commit就好。如果父项目需要用到最新版本的子模块，我们需要更新<code>.gitmodules</code>中submodule commit id。</p>
 <h3 id="4-更新submodule"><a href="#4-更新submodule" class="headerlink" title="4. 更新submodule"></a>4. 更新submodule</h3><p>子模块的默认分支不是master</p>
 <p>方法一：先pull父项目，然后执行<code>git submodule update</code>，注意moduleA的分支</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> project</span><br><span class="line">git pull</span><br><span class="line">git submodule update</span><br></pre></td></tr></table></figure>
-
 <p>方法二：先进入子模块，然后切换到需要的分支，在子模块中pull</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> project/moduleA</span><br><span class="line">git checkout &lt;branch-name&gt;</span><br><span class="line"><span class="built_in">cd</span> ..</span><br><span class="line">git submodule foreach git pull</span><br></pre></td></tr></table></figure>
-
 <h3 id="5-删除submodule"><a href="#5-删除submodule" class="headerlink" title="5. 删除submodule"></a>5. 删除submodule</h3><p>先unregister需要删除的子模块，之后可以<code>git-rm</code>移除子模块代码文件</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> project</span><br><span class="line">git submodule deinit &lt;submodule-name&gt;</span><br><span class="line">git rm &lt;submodule-name&gt;</span><br><span class="line">git commit -m <span class="string">&#x27;delete submodule &lt;submodule-name&gt;&#x27;</span></span><br></pre></td></tr></table></figure>
-
 <p><code>--force</code>选项会强制删除子模块，即便子模块已经有本地修改</p>
 <p><code>.git/config</code>和<code>.gitmodules</code>中相应内容自动被删除。在之后的<code>git submodule</code>和<code>git submodule foreach</code>都会跳过unregister的子模块</p>
 <h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/nicksheng/p/6201711.html">Git Submodule管理项目子模块</a></p>
@@ -373,14 +363,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-count">18</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-count">19</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

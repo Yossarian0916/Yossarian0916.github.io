@@ -77,11 +77,7 @@
   </style>
 </noscript>
 
-<!-- hexo injector head_end start -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
-<!-- hexo injector head_end end --></head>
+</head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -190,6 +186,107 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://yossarian0916.github.io/2020/07/15/josephus-problem/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/gopher.png">
+      <meta itemprop="name" content="Yossarian42">
+      <meta itemprop="description" content="个人博客, 学习，记录">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="乱笔">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/07/15/josephus-problem/" class="post-title-link" itemprop="url">Josephus Problem</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-07-15 00:00:00" itemprop="dateCreated datePublished" datetime="2020-07-15T00:00:00+08:00">2020-07-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-12-13 10:00:48" itemprop="dateModified" datetime="2020-12-13T10:00:48+08:00">2020-12-13</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="Josephus-Problem"><a href="#Josephus-Problem" class="headerlink" title="Josephus Problem"></a>Josephus Problem</h1><h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>Josephus problem (or Josephus permutation), 简单说，N个人围成一圈，从某一人（比如第k个）开始报数，报到m的人退出，如此循环，直到最后一个人</p>
+<blockquote>
+<p>People are standing in a circle waiting to be executed. Counting begins at a specified point in the circle and proceeds around the circle in a specified direction. After a specified number of people are skipped, the next person is executed. The procedure is repeated with the remaining people, starting with the next person, going in the same direction and skipping the same number of people, until only one person remains, and is freed.</p>
+</blockquote>
+<h2 id="解法1-circular-linked-list"><a href="#解法1-circular-linked-list" class="headerlink" title="解法1: circular linked list"></a>解法1: circular linked list</h2><p>循环链表解法很直接，复杂度O(n)</p>
+<p>每个Node就是问题中的一个人，数到谁就删除相应的Node，最后只剩一个Node</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> data;</span><br><span class="line">    Node next;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Node</span><span class="params">(<span class="keyword">int</span> data)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.data = data;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Node <span class="title">createCirLinkedList</span><span class="params">(<span class="keyword">int</span> N)</span> </span>&#123;</span><br><span class="line">     Node head = <span class="keyword">new</span> Node(<span class="number">1</span>);</span><br><span class="line">     Node next = head;</span><br><span class="line">     <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= N; i++)&#123;</span><br><span class="line">         Node tmp = <span class="keyword">new</span> Node(i);</span><br><span class="line">         next.next = tmp;</span><br><span class="line">         next = next.next;</span><br><span class="line">      &#125;</span><br><span class="line">      next.next = head;</span><br><span class="line">      <span class="keyword">return</span> head;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">solve</span><span class="params">(<span class="keyword">int</span> N, <span class="keyword">int</span> m)</span> </span>&#123;</span><br><span class="line">     <span class="comment">/* create circurlar linked list */</span></span><br><span class="line">     Node head = createCirLinkedList(N);</span><br><span class="line">     <span class="comment">/* remove node recursively */</span> </span><br><span class="line">     <span class="keyword">while</span> (head != head.next)&#123;</span><br><span class="line">         <span class="comment">/* move head point to the previous node before to-be-deleted node */</span></span><br><span class="line">         <span class="comment">/* head.next is the node to be deleted */</span></span><br><span class="line">         <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; m - <span class="number">1</span>; i++)&#123;</span><br><span class="line">             head = head.next;</span><br><span class="line">         &#125;</span><br><span class="line">         System.out.print(head.next.data+<span class="string">&quot;-&gt;&quot;</span>);</span><br><span class="line">         <span class="comment">/* remove the m-th node */</span></span><br><span class="line">         head.next = head.next.next;</span><br><span class="line">         head = head.next;</span><br><span class="line">         &#125;</span><br><span class="line">         System.out.print(<span class="string">&quot;Done!\n&quot;</span>);</span><br><span class="line">         <span class="keyword">return</span> head.data;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="解法2-数学方法递推公式"><a href="#解法2-数学方法递推公式" class="headerlink" title="解法2: 数学方法递推公式"></a>解法2: 数学方法递推公式</h2><p>求Josephus的递推就比较有意思啦，正向不行，得反着来。所有人围成一个圆，整个序列从任意一点开始都可，0点（index是0）是谁都一样可以数下去。那么每轮都把上一次被删除的那个人的下一个位置作为新的0点，开始新一轮数数。这样子，每一轮都是重复一样的模式在数数，recursion来了。</p>
+<p>$J(n)$表示n个人玩最后胜利者的编号（编号从0开始），按照这样设定初始条件$J(1) = 0$  </p>
+<p>过程：</p>
+<p>$J(n)$:</p>
+<p>   编号m % ( n - 1 )出局，剩下的人组成一个新的环，从k = m % n开始</p>
+<p>   0, 1, 2, 3, 4, …, k-2, <del>k-1,</del> k, k+1, k+2, k+3, k+4, …, n-1</p>
+<p>$J(n-1)$:</p>
+<p>   n-k, n-k+1, n-k+2,…, n-2,   0, 1, 2, 3, 4, …, n-k-1,</p>
+<p>   编号做一下转换：</p>
+<pre><code>        J(n)编号 --&gt; J(n-1)编号
+
+               k --&gt; 0
+
+             k+1 --&gt; 1
+
+             k+2 --&gt; 2
+
+                 ...
+
+             k-2 --&gt; n-2
+
+             k-1 --&gt; n-1
+</code></pre>
+<p>n个人玩J(n)时的序号转换成n-1个人玩J(n-1)的序号，这样之，当我们知道子问题J(n-1）的胜利者编号就可以转换成J(n)时的编号，J(1)-&gt;J(2)-&gt;…-&gt;J(n-1)-&gt;J(n), 递推公式就来了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">   J(n) &#x3D; (J(n-1) + k) % n, k &#x3D; m % n</span><br><span class="line">&#x3D;&gt; J(n) &#x3D; (J(n-1) + m % n) % n</span><br><span class="line">        &#x3D; (J(n-1) + m) % n</span><br></pre></td></tr></table></figure>
+<p>递推公式:<br>J(1) = 0<br>J(n) = (J(n-1) + m) % n</p>
+<h3 id="recursive"><a href="#recursive" class="headerlink" title="recursive"></a>recursive</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">solve</span><span class="params">(<span class="keyword">int</span> N, <span class="keyword">int</span> m)</span> </span>&#123;</span><br><span class="line">     <span class="comment">/* index begin at 0 */</span></span><br><span class="line">     <span class="keyword">if</span> (N == <span class="number">1</span>) &#123;</span><br><span class="line">         <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">return</span> (recursiveSolve(N - <span class="number">1</span>, m) + m) % N;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* when index begins at 1 */</span></span><br><span class="line"><span class="keyword">int</span> res = solve(N, m) + <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="iterative"><a href="#iterative" class="headerlink" title="iterative"></a>iterative</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">solve</span><span class="params">(<span class="keyword">int</span> N, <span class="keyword">int</span> m)</span> </span>&#123;</span><br><span class="line">     <span class="comment">/* index begin at 0 */</span></span><br><span class="line">     <span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">     <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= N; i++)&#123;</span><br><span class="line">         res = (res + m) % i;</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="comment">/* when index begin at 1 */</span></span><br><span class="line">     res = res + <span class="number">1</span>;</span><br><span class="line">     <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Josephus_problem">Josephus problem wikipedia</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/jclian91/p/8660123.html">Josephus Problem的详细算法</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -336,7 +433,6 @@
 </li>
 <li><p>泛型的类型参数不能用在Java异常处理的<code>catch</code>语句中。因为异常处理是由JVM在运行时刻来进行的。由于类型信息被擦除，JVM是无法区分两个异常类型<code>MyException&lt;String&gt;</code>和<code>MyException&lt;Integer&gt;</code>的。对于JVM来说，它们都是<code> MyException</code>类型的。也就无法执行与异常对应的<code>catch</code>语句。</p>
 <h4 id="不允许创建参数化类型数组"><a href="#不允许创建参数化类型数组" class="headerlink" title="不允许创建参数化类型数组"></a>不允许创建参数化类型数组</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Pair&lt;String&gt;[] table = <span class="keyword">new</span> Pair&lt;String&gt;[<span class="number">10</span>];  <span class="comment">// Error</span></span><br></pre></td></tr></table></figure>
-
 <p>擦除之后，<code>table</code>的类型是<code>Pair[]</code>。可以把它转换为<code>Object[]</code>:<code>Object[] objarray = table;</code></p>
 <p>数组会记住它的元素类型，如果试图存储其他类型的元素，就会抛出一个<code>ArrayStoreException</code>异常：<code>objarray[0] = &quot;hello&quot;; // Error--component tye is Pair</code></p>
 <p>不过对于泛型类型， 擦除会使这种机制无效。</p>
@@ -433,7 +529,7 @@
 <p>中国人在这个规定上有自己的扩展（如GBK），英国人也有自己的扩展（如ISO-8859-1,即latin-1）。所以ISO-8859-1和GBK都可以称之为ANSI编码，因为它们符合ANSI规定。以Windows系统为例，中文系统中所指的ANSI编码就是GBK，英文系统中的ANSI编码就是ISO-8859-1。</p>
 <h3 id="MBCS"><a href="#MBCS" class="headerlink" title="MBCS"></a>MBCS</h3><p>多字节字符集(Multi-Byte Character Set)，采用不定长度可以是一个字节，也可以是两个字节，也可以是三个字节来进行编码。大多数情况下2个字节就够用了，汉字就分配两个字节，称之为DBCS（Double-Byte Chactacter Set）。</p>
 <p>在Linux系统中看得到MBCS说法，在Windows中呢？其实就是ANSI，ANSI只规定了第一个字节的位置是ASCII，超出这个范围的，肯定也是多字节的了。</p>
-<h2 id="Unicode字符集"><a href="#Unicode字符集" class="headerlink" title="Unicode字符集"></a>Unicode字符集</h2><p><strong><em>通过以上的介绍知道，各种解决方案都是各自为政，解决不了 “同一个系统中同时显示全宇宙的所有字符” 这个问题。</em></strong></p>
+<h2 id="Unicode字符集"><a href="#Unicode字符集" class="headerlink" title="Unicode字符集"></a>Unicode字符集</h2><p><em><strong>通过以上的介绍知道，各种解决方案都是各自为政，解决不了 “同一个系统中同时显示全宇宙的所有字符” 这个问题。</strong></em></p>
 <p>于是就有两个组织，他们开始着手做这件事情，UCS和Unicode诞生了。</p>
 <p>通用字符集（UCS，Universal Character Set）是由国际标准化组织（ISO）制定的 ISO 10646标准所定义的字符集。通常也译为通用多八位编码字符集。统一码（Unicode）是由统一码联盟指定的。</p>
 <p>后来发现，一山不容二虎，世界人民不需要两个目的相同但是具体实现却有差异的编码方案。UCS和Unicode握手言和，从 Unicode 2.0 起，采用了和ISO 10646-1的编码方案，它们在相同的码位上都对应同样的字符。尽管这两个组织目前还在相互独立的在发布字符编码标准。</p>
@@ -618,10 +714,8 @@
 <li><p>网络接口（NET）</p>
 </li>
 </ul>
-</li>
-</ol>
 <hr>
-<ol start="2">
+</li>
 <li><p>Linux Shell</p>
 <p>…</p>
 <hr>
@@ -757,9 +851,7 @@
 </ul>
 </li>
 <li><p>最后的最后，检查TensorFlow是否能使用GPU加速</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> tensorflow.python.client <span class="keyword">import</span> device_lib</span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># list the avilable devices in local processes</span></span><br><span class="line">device_lib.list_local_devices()</span><br><span class="line"></span><br><span class="line"><span class="comment"># matrix multiplying with GPU</span></span><br><span class="line">a = tf.constant([<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>, <span class="number">4.0</span>, <span class="number">5.0</span>, <span class="number">6.0</span>], shape=[<span class="number">2</span>, <span class="number">3</span>], name=<span class="string">&#x27;a&#x27;</span>)</span><br><span class="line">b = tf.constant([<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>, <span class="number">4.0</span>, <span class="number">5.0</span>, <span class="number">6.0</span>], shape=[<span class="number">3</span>, <span class="number">2</span>], name=<span class="string">&#x27;b&#x27;</span>)</span><br><span class="line">c = tf.matmul(a, b)</span><br><span class="line"></span><br><span class="line">sess = tf.Session(config=tf.ConfigProto(log_device_placement=<span class="literal">True</span>))</span><br><span class="line">print(sess.run(c))</span><br></pre></td></tr></table></figure>
-
-</li>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> tensorflow.python.client <span class="keyword">import</span> device_lib</span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># list the avilable devices in local processes</span></span><br><span class="line">device_lib.list_local_devices()</span><br><span class="line"></span><br><span class="line"><span class="comment"># matrix multiplying with GPU</span></span><br><span class="line">a = tf.constant([<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>, <span class="number">4.0</span>, <span class="number">5.0</span>, <span class="number">6.0</span>], shape=[<span class="number">2</span>, <span class="number">3</span>], name=<span class="string">&#x27;a&#x27;</span>)</span><br><span class="line">b = tf.constant([<span class="number">1.0</span>, <span class="number">2.0</span>, <span class="number">3.0</span>, <span class="number">4.0</span>, <span class="number">5.0</span>, <span class="number">6.0</span>], shape=[<span class="number">3</span>, <span class="number">2</span>], name=<span class="string">&#x27;b&#x27;</span>)</span><br><span class="line">c = tf.matmul(a, b)</span><br><span class="line"></span><br><span class="line">sess = tf.Session(config=tf.ConfigProto(log_device_placement=<span class="literal">True</span>))</span><br><span class="line">print(sess.run(c))</span><br></pre></td></tr></table></figure></li>
 </ol>
 
       
@@ -841,9 +933,7 @@
 <li>客户端/服务器socket通信简单例子</li>
 </ol>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 客户端</span></span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"></span><br><span class="line"><span class="comment"># create socket descriptor</span></span><br><span class="line">client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line"><span class="comment"># connect with local loopback address</span></span><br><span class="line">client.connect((<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">9999</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># receive message from server, and send message from console input</span></span><br><span class="line"><span class="comment"># close the socket until input &#x27;exit&#x27;</span></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    data = client.recv(<span class="number">1024</span>)</span><br><span class="line">    print(data.decode(<span class="string">&#x27;utf-8&#x27;</span>))</span><br><span class="line">    </span><br><span class="line">    msg = input(<span class="string">&#x27;&gt;&gt;&gt; &#x27;</span>)</span><br><span class="line">    client.send(msg.encode(<span class="string">&#x27;utf-8&#x27;</span>))</span><br><span class="line">    <span class="keyword">if</span> msg == <span class="string">&#x27;exit&#x27;</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">client.close()</span><br></pre></td></tr></table></figure>
-
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 服务器端</span></span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line">s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">s.bind((<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">9999</span>))</span><br><span class="line">s.listen(<span class="number">5</span>)  <span class="comment"># backlog number</span></span><br><span class="line">print(<span class="string">&#x27;Waiting for connection...&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># accept connection from client</span></span><br><span class="line"><span class="comment"># receive message from client and send a random integer back </span></span><br><span class="line"><span class="comment"># until receive &#x27;exit&#x27;, close the connection and wait for next one</span></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    conn, addr = s.accept()</span><br><span class="line">    conn.send(<span class="string">b&#x27;Welcome&#x27;</span>)</span><br><span class="line">    print(<span class="string">&#x27;Connected with %s:%s&#x27;</span> % addr)</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        data = conn.recv(<span class="number">1024</span>)</span><br><span class="line">        time.sleep(<span class="number">1</span>)  <span class="comment"># simple way to unpack block</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> data <span class="keyword">or</span> data.encode(<span class="string">&#x27;utf-8&#x27;</span>) == <span class="string">&#x27;exit&#x27;</span>:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            msg = random.randint(<span class="number">1</span>, <span class="number">100</span>)</span><br><span class="line">            conn.send(str(msg).encode(<span class="string">&#x27;utf-8&#x27;</span>))</span><br><span class="line">    conn.close()</span><br><span class="line">    print(<span class="string">&#x27;Connection from %s:%s closed\n&#x27;</span> % addr)</span><br></pre></td></tr></table></figure>
-
 <ol start="4">
 <li><p>Python socket编程</p>
 <p>a. 创建socket描述符</p>
@@ -977,14 +1067,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-count">18</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-count">19</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -1147,6 +1237,59 @@ window.addEventListener('pjax:success', () => {
   
 
   
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
 
   
 <div class="moon-menu">
